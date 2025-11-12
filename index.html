@@ -86,36 +86,37 @@
           if (parseInt(answer) === 5) unlockDoor(door);
           else alert("❌ Wrong answer. Try again!");
           break;
-        case 5:
-          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
-          if (answer.toLowerCase() === "and") unlockDoor(door);
+                  case 5:
+          answer = prompt("Combinational Logic: What is the output of XOR(1,1)?");
+          if (parseInt(answer) === 0) unlockDoor(door);
           else alert("❌ Wrong answer. Try again!");
           break;
         case 6:
-          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
-          if (answer.toLowerCase() === "and") unlockDoor(door);
+          answer = prompt("Sequential Circuit: In a JK flip-flop, if J=1 and K=1, what happens on clock pulse?");
+          if (answer.toLowerCase() === "toggle" || answer.toLowerCase() === "toggles") unlockDoor(door);
           else alert("❌ Wrong answer. Try again!");
           break;
         case 7:
-          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
-          if (answer.toLowerCase() === "and") unlockDoor(door);
+          answer = prompt("Assembly: If R2 = 8 and we execute SHL R2 (shift left), what is the new value?");
+          if (parseInt(answer) === 16) unlockDoor(door);
           else alert("❌ Wrong answer. Try again!");
           break;
         case 8:
-          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
-          if (answer.toLowerCase() === "and") unlockDoor(door);
+          answer = prompt("Decoder: A 2-to-4 decoder with inputs 11 (binary) activates which output line (0-3)?");
+          if (parseInt(answer) === 3) unlockDoor(door);
           else alert("❌ Wrong answer. Try again!");
           break;
         case 9:
-          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
-          if (answer.toLowerCase() === "and") unlockDoor(door);
+          answer = prompt("Multiplexer: A 4-to-1 MUX with select lines 10 (binary) chooses which input (0-3)?");
+          if (parseInt(answer) === 2) unlockDoor(door);
           else alert("❌ Wrong answer. Try again!");
           break;
         case 10:
-          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
-          if (answer.toLowerCase() === "and") unlockDoor(door);
+          answer = prompt("Final Riddle: I have 8 bits, I can represent numbers 0-255, but with 2's complement, what's my range?");
+          if (answer.toLowerCase().includes("-128") && answer.toLowerCase().includes("127")) unlockDoor(door);
           else alert("❌ Wrong answer. Try again!");
           break;
+        
       }
     }
 
