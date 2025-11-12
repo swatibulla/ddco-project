@@ -51,6 +51,11 @@
     <div id="door3" class="door hidden" onclick="solvePuzzle(3)">Door 3</div>
     <div id="door4" class="door hidden" onclick="solvePuzzle(4)">Door 4</div>
     <div id="door5" class="door hidden" onclick="solvePuzzle(5)">Door 5</div>
+    <div id="door6" class="door hidden" onclick="solvePuzzle(5)">Door 6</div>
+    <div id="door7" class="door hidden" onclick="solvePuzzle(5)">Door 7</div>
+    <div id="door8" class="door hidden" onclick="solvePuzzle(5)">Door 8</div>
+    <div id="door9" class="door hidden" onclick="solvePuzzle(5)">Door 9</div>
+    <div id="door10" class="door hidden" onclick="solvePuzzle(5)">Door 10</div>
   </div>
   <div id="message"></div>
   <div id="keys">🔑 Keys Collected: 0</div>
@@ -86,6 +91,31 @@
           if (answer.toLowerCase() === "and") unlockDoor(door);
           else alert("❌ Wrong answer. Try again!");
           break;
+        case 6:
+          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
+          if (answer.toLowerCase() === "and") unlockDoor(door);
+          else alert("❌ Wrong answer. Try again!");
+          break;
+        case 7:
+          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
+          if (answer.toLowerCase() === "and") unlockDoor(door);
+          else alert("❌ Wrong answer. Try again!");
+          break;
+        case 8:
+          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
+          if (answer.toLowerCase() === "and") unlockDoor(door);
+          else alert("❌ Wrong answer. Try again!");
+          break;
+        case 9:
+          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
+          if (answer.toLowerCase() === "and") unlockDoor(door);
+          else alert("❌ Wrong answer. Try again!");
+          break;
+        case 10:
+          answer = prompt("Truth Table: Which gate gives output 1 only when both inputs are 1?");
+          if (answer.toLowerCase() === "and") unlockDoor(door);
+          else alert("❌ Wrong answer. Try again!");
+          break;
       }
     }
 
@@ -96,7 +126,7 @@
       keysCollected++;
       document.getElementById("keys").innerText = `🔑 Keys Collected: ${keysCollected}`;
       document.getElementById("message").innerText = `✅ Door ${door} unlocked! You found a key!`;
-      if (door === 5) {
+      if (door === 10) {
         document.getElementById("message").innerText = "🎉 You escaped all DDCO doors and collected all keys!";
       }
     }
