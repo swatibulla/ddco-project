@@ -19,6 +19,32 @@
       color: #fff;
       text-shadow: 0 0 18px rgba(0,200,255,0.35);
     }
+    #timer {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #00ff00;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: 2px solid #00ff00;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+      z-index: 999;
+    }
+    #timer.warning {
+      color: #ffff00;
+      border-color: #ffff00;
+      box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
+    }
+    #timer.danger {
+      color: #ff0000;
+      border-color: #ff0000;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+      animation: blink 0.5s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     .intro-screen {
       margin: 30px auto;
       padding: 28px;
@@ -104,14 +130,17 @@
       cursor:pointer;
     }
     .victory-screen { display:none; padding:28px; margin-top:16px; border:2px solid #ffd36b; border-radius:10px; background:#07121a; color:#fff; }
+    .timeout-screen { display:none; padding:28px; margin-top:16px; border:2px solid #ff0000; border-radius:10px; background:#07121a; color:#ff0000; text-align: center; }
   </style>
 </head>
 <body>
   <h1>🔐 DDCO ESCAPE ROOM 🔐</h1>
 
+  <div id="timer">⏱️ 10:00</div>
+
   <div class="intro-screen" id="introScreen">
     <p><strong>You are entering the DDCO Escape Room!</strong></p>
-    <p>10 doors. 10 riddles. 10 keys. A guide will appear after each success with directions to where the next door hides.</p>
+    <p>10 doors. 10 riddles. 10 keys. You have 10 minutes to escape!</p>
     <p>Click a visible door, choose to open it, solve the riddle to claim the key — then listen to the guide.</p>
     <button class="start-button" onclick="startGame()">🚪 Start Adventure</button>
   </div>
@@ -138,6 +167,13 @@
     <div class="victory-screen" id="victoryScreen">
       <h3>🎉 Escape Successful!</h3>
       <p>You collected all keys and escaped the DDCO Escape Room. Well played.</p>
+      <p id="victoryTime"></p>
+    </div>
+
+    <div class="timeout-screen" id="timeoutScreen">
+      <h3>⏰ Time's Up!</h3>
+      <p>You ran out of time. The doors have locked forever.</p>
+      <p>You escaped <span id="finalKeys">0</span>/10 rooms.</p>
     </div>
   </div>
 
@@ -148,7 +184,7 @@
   </div>
 
   <script>
-    // puzzles array with checks and narrative (NO HINTS)
+    // ...existing code...
     const puzzles = [
       { q: "Binary Puzzle: What is the decimal value of 1011?", check: a => parseInt(a) === 11, lootNote: "a brass key behind a binary poster", clue: "Check the poster near the resistor shelf." },
       { q: "Logic Gate: NOT(OR(0,1,0)) = ?", check: a => parseInt(a) === 0, lootNote: "a copper key under a loose tile", clue: "Look for the loose tile near the bench." },
@@ -163,31 +199,76 @@
     ];
 
     let keysCollected = 0;
+    let timeRemaining = 600; // 10 minutes in seconds
+    let timerInterval = null;
+    let gameActive = false;
+
+    function startTimer() {
+      gameActive = true;
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerDisplay();
+
+        if (timeRemaining <= 0) {
+          gameOver();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const timerEl = document.getElementById("timer");
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = timeRemaining % 60;
+      const timeStr = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')}`;
+      timerEl.innerText = timeStr;
+
+      // Change color based on time remaining
+      if (timeRemaining <= 60) {
+        timerEl.classList.add("danger");
+        timerEl.classList.remove("warning");
+      } else if (timeRemaining <= 180) {
+        timerEl.classList.add("warning");
+        timerEl.classList.remove("danger");
+      } else {
+        timerEl.classList.remove("warning", "danger");
+      }
+    }
+
+    function gameOver() {
+      gameActive = false;
+      clearInterval(timerInterval);
+      document.getElementById("gameContainer").style.display = "none";
+      document.getElementById("timeoutScreen").style.display = "block";
+      document.getElementById("finalKeys").innerText = keysCollected;
+    }
 
     function startGame() {
       document.getElementById("introScreen").style.display = "none";
       document.getElementById("gameContainer").style.display = "block";
-      document.getElementById("message").innerText = "You step into the room. The first door glows faintly — open it to begin.";
+      document.getElementById("message").innerText = "You step into the room. The first door glows faintly — open it to begin. ⏰ Timer started!";
       document.getElementById("door1").classList.add("pulse");
+      startTimer();
     }
 
     function onDoorClick(doorNum) {
+      if (!gameActive) {
+        alert("Time is up! Game over.");
+        return;
+      }
+
       const doorEl = document.getElementById(`door${doorNum}`);
-      // ignore clicks on already unlocked doors
       if (doorEl.classList.contains("unlocked")) {
         document.getElementById("message").innerText = `Door ${doorNum} is already open. Check for clues or the guide.`;
         showNpc(`You've already opened Door ${doorNum}. Next clue: ${getNextClue(doorNum)}`);
         return;
       }
 
-      // confirm open
       const open = confirm("You are entering the escape room now. Open this door?");
       if (!open) {
         document.getElementById("message").innerText = "You step back... maybe open it later.";
         return;
       }
 
-      // ask the riddle (no hints available)
       const p = puzzles[doorNum - 1];
       if (!p) {
         alert("This door seems empty.");
@@ -197,7 +278,6 @@
       let attempt = prompt(`${p.q}`);
       if (attempt === null) { document.getElementById("message").innerText = "You close the door without answering."; return; }
 
-      // evaluate
       let ok = false;
       try { ok = p.check(attempt); } catch(e){ ok = false; }
 
@@ -205,7 +285,6 @@
         unlockDoor(doorNum);
         showNpc(`Nice! You found ${p.lootNote}. Clue: ${p.clue}`);
       } else {
-        // give progressive feedback and small nudge
         const tries = doorEl.dataset.tries ? parseInt(doorEl.dataset.tries) + 1 : 1;
         doorEl.dataset.tries = tries;
         const nudges = [
@@ -225,23 +304,21 @@
       doorEl.classList.remove("pulse");
       doorEl.style.cursor = "default";
 
-      // reveal next door if exists
       const next = document.getElementById(`door${doorNum + 1}`);
       if (next) {
         next.classList.remove("hidden");
-        // highlight next door so players can "find" it
         next.classList.add("pulse");
       }
 
-      // increment keys and update shelf
       keysCollected++;
       document.getElementById("keyCount").innerText = `🔑 Keys Collected: ${keysCollected}/10`;
       addKeyIcon(keysCollected);
 
       document.getElementById("message").innerText = `✅ Door ${doorNum} unlocked! You found a key. Listen for the guide's hint.`;
 
-      // when last key, show exit
       if (keysCollected === 10) {
+        gameActive = false;
+        clearInterval(timerInterval);
         document.getElementById("exitDoor").style.display = "block";
         document.getElementById("exitDoor").classList.add("pulse");
         showNpc("All keys collected — the EXIT DOOR is revealed. Open it to escape.");
@@ -272,15 +349,26 @@
     }
 
     function escapeRoom() {
+      if (!gameActive) return;
+      gameActive = false;
+      clearInterval(timerInterval);
       const ok = confirm("Use the master key to open the EXIT DOOR and escape?");
-      if (!ok) return;
+      if (!ok) {
+        gameActive = true;
+        startTimer();
+        return;
+      }
       document.getElementById("gameContainer").style.display = "none";
       document.getElementById("victoryScreen").style.display = "block";
+      const mins = Math.floor((600 - timeRemaining) / 60);
+      const secs = (600 - timeRemaining) % 60;
+      document.getElementById("victoryTime").innerText = `You escaped in ${mins}:${secs.toString().padStart(2, '0')}!`;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       for (let i = 2; i <= 10; i++) document.getElementById(`door${i}`).classList.add('hidden');
     });
+    // ...existing code...
   </script>
 </body>
 </html>
