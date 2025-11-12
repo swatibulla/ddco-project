@@ -1,3 +1,4 @@
+// ...existing code...
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,279 +8,289 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #0a0a0a;
-      color: #00ff00;
+      background-color: #071018;
+      color: #cfeee7;
       text-align: center;
       margin: 0;
       padding: 20px;
     }
     h1 {
-      margin-top: 40px;
-      font-size: 48px;
-      text-shadow: 0 0 20px #00ff00;
-      animation: glow 2s infinite;
-    }
-    @keyframes glow {
-      0%, 100% { text-shadow: 0 0 20px #00ff00; }
-      50% { text-shadow: 0 0 40px #00ff00, 0 0 60px #00ff00; }
+      margin-top: 20px;
+      font-size: 40px;
+      color: #fff;
+      text-shadow: 0 0 18px rgba(0,200,255,0.35);
     }
     .intro-screen {
-      margin-top: 60px;
-      padding: 40px;
-      border: 3px solid #00ff00;
-      background-color: rgba(0, 255, 0, 0.1);
-      border-radius: 10px;
-      font-size: 20px;
-      line-height: 1.8;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .intro-screen p {
-      margin: 15px 0;
+      margin: 30px auto;
+      padding: 28px;
+      border: 2px solid #00e5ff;
+      background: linear-gradient(180deg, rgba(0,230,255,0.04), rgba(0,0,0,0.25));
+      border-radius: 12px;
+      font-size: 18px;
+      line-height: 1.6;
+      width: 92%;
+      max-width: 820px;
     }
     .start-button {
-      margin-top: 30px;
-      padding: 15px 40px;
-      font-size: 24px;
-      background-color: #00ff00;
-      color: #0a0a0a;
+      margin-top: 18px;
+      padding: 12px 28px;
+      font-size: 20px;
+      background-color: #00e5ff;
+      color: #012;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s;
+      font-weight: 700;
     }
-    .start-button:hover {
-      background-color: #00cc00;
-      box-shadow: 0 0 20px #00ff00;
-      transform: scale(1.05);
-    }
-    .game-container {
-      display: none;
-    }
+    .game-container { display: none; margin-top: 12px; }
+    #game { display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin-top:12px; }
     .door {
-      margin: 20px;
-      padding: 30px;
-      border: 3px solid #ff6600;
-      display: inline-block;
+      width: 160px;
+      height: 110px;
+      margin: 8px;
+      padding: 10px;
+      border: 3px solid #ffb86b;
+      display: inline-flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
       cursor: pointer;
-      background-color: #333;
+      background-color: #071a20;
+      border-radius: 10px;
+      font-size: 18px;
+      color: #ffe8c9;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .door:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+    .door.hidden { display: none; }
+    .door.unlocked {
+      background: linear-gradient(180deg,#0af3a3,#02785f);
+      color: #02120f;
+      border-color: #00ffb3;
+      box-shadow: 0 10px 30px rgba(0,255,176,0.12);
+      transform: none;
+      cursor: default;
+    }
+    #message { margin-top: 18px; font-size: 18px; min-height:44px; }
+    #keys { margin-top: 12px; font-size: 18px; color: #ffd36b; }
+    .key-icon { display:inline-block; margin:0 6px; font-size:20px; }
+    .npc {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      background: rgba(3,18,26,0.95);
+      color: #dff9f3;
+      border: 2px solid #00c6ff;
+      padding: 12px 14px;
+      border-radius: 12px;
+      max-width: 320px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: none;
+      z-index: 200;
+    }
+    .npc h4 { margin: 0 0 6px 0; font-size:16px; color:#bff7ff; }
+    .npc p { margin: 0; font-size:14px; color:#eafefb; line-height:1.4; }
+    .npc .close { margin-top: 8px; display:block; text-align:right; font-size:13px; color:#9be8ff; cursor:pointer; }
+    .pulse { animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 8px rgba(0,190,255,0.12); } 50% { box-shadow: 0 0 28px rgba(0,190,255,0.22); } 100% { box-shadow:0 0 8px rgba(0,190,255,0.12); } }
+    .exit-door {
+      margin-top: 20px;
+      padding: 20px;
+      border: 3px dashed #ff7bff;
+      background: linear-gradient(180deg, rgba(255,123,255,0.04), rgba(0,0,0,0.2));
       border-radius: 10px;
       font-size: 20px;
-      font-weight: bold;
-      transition: all 0.3s;
-      box-shadow: 0 0 10px #ff6600;
+      display:none;
+      cursor:pointer;
     }
-    .door:hover {
-      background-color: #555;
-      box-shadow: 0 0 20px #ff6600;
-      transform: scale(1.1);
-    }
-    .door.unlocked {
-      background-color: #00ff00;
-      border-color: #00ff00;
-      box-shadow: 0 0 20px #00ff00;
-      color: #0a0a0a;
-    }
-    .hidden {
-      display: none;
-    }
-    #message {
-      margin-top: 30px;
-      font-size: 22px;
-      min-height: 40px;
-      animation: slideIn 0.5s ease-in-out;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #keys {
-      margin-top: 20px;
-      font-size: 24px;
-      color: #ffff00;
-      font-weight: bold;
-      text-shadow: 0 0 10px #ffff00;
-    }
-    .key-icon {
-      display: inline-block;
-      margin: 0 5px;
-      animation: bounce 0.6s infinite;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    .exit-door {
-      margin-top: 40px;
-      padding: 40px;
-      border: 4px solid #ff00ff;
-      background-color: rgba(255, 0, 255, 0.15);
-      border-radius: 15px;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      display: none;
-      box-shadow: 0 0 30px #ff00ff;
-      transition: all 0.3s;
-    }
-    .exit-door:hover {
-      background-color: rgba(255, 0, 255, 0.3);
-      box-shadow: 0 0 50px #ff00ff;
-      transform: scale(1.05);
-    }
-    .victory-screen {
-      display: none;
-      margin-top: 60px;
-      padding: 40px;
-      border: 3px solid #ffff00;
-      background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.2));
-      border-radius: 10px;
-      font-size: 24px;
-    }
+    .victory-screen { display:none; padding:28px; margin-top:16px; border:2px solid #ffd36b; border-radius:10px; background:#07121a; color:#fff; }
   </style>
 </head>
 <body>
   <h1>🔐 DDCO ESCAPE ROOM 🔐</h1>
 
   <div class="intro-screen" id="introScreen">
-    <p>⚠️ WARNING ⚠️</p>
-    <p>You have been locked in a mysterious room filled with DDCO puzzles and logic gates.</p>
-    <p>To escape, you must solve 10 challenging puzzles and collect all 10 keys.</p>
-    <p>Each door will test your knowledge of:</p>
-    <p>✓ Binary & Number Systems | ✓ Logic Gates | ✓ Flip-Flops | ✓ Assembly Language | ✓ Digital Circuits</p>
-    <p>🎯 Solve all 10 doors to unlock the final EXIT DOOR and escape!</p>
-    <p>⏰ Your fate awaits... Do you have what it takes?</p>
-    <button class="start-button" onclick="startGame()">🚀 ENTER THE ROOM</button>
+    <p><strong>You are entering the DDCO Escape Room!</strong></p>
+    <p>10 doors. 10 riddles. 10 keys. A guide will appear after each success with a hint to where the next door hides.</p>
+    <p>Click a visible door, choose to open it, solve the riddle to claim the key — then listen to the guide.</p>
+    <button class="start-button" onclick="startGame()">🚪 Start Adventure</button>
   </div>
 
   <div class="game-container" id="gameContainer">
     <div id="game">
-      <div id="door1" class="door" onclick="solvePuzzle(1)">🚪 Door 1</div>
-      <div id="door2" class="door hidden" onclick="solvePuzzle(2)">🚪 Door 2</div>
-      <div id="door3" class="door hidden" onclick="solvePuzzle(3)">🚪 Door 3</div>
-      <div id="door4" class="door hidden" onclick="solvePuzzle(4)">🚪 Door 4</div>
-      <div id="door5" class="door hidden" onclick="solvePuzzle(5)">🚪 Door 5</div>
-      <div id="door6" class="door hidden" onclick="solvePuzzle(6)">🚪 Door 6</div>
-      <div id="door7" class="door hidden" onclick="solvePuzzle(7)">🚪 Door 7</div>
-      <div id="door8" class="door hidden" onclick="solvePuzzle(8)">🚪 Door 8</div>
-      <div id="door9" class="door hidden" onclick="solvePuzzle(9)">🚪 Door 9</div>
-      <div id="door10" class="door hidden" onclick="solvePuzzle(10)">🚪 Door 10</div>
+      <div id="door1" class="door" onclick="onDoorClick(1)"><div>🚪 Door 1</div><small>Binary Corner</small></div>
+      <div id="door2" class="door hidden" onclick="onDoorClick(2)"><div>🚪 Door 2</div><small>Logic Shelf</small></div>
+      <div id="door3" class="door hidden" onclick="onDoorClick(3)"><div>🚪 Door 3</div><small>Flip-Flop Wall</small></div>
+      <div id="door4" class="door hidden" onclick="onDoorClick(4)"><div>🚪 Door 4</div><small>Instruction Nook</small></div>
+      <div id="door5" class="door hidden" onclick="onDoorClick(5)"><div>🚪 Door 5</div><small>ALU Bench</small></div>
+      <div id="door6" class="door hidden" onclick="onDoorClick(6)"><div>🚪 Door 6</div><small>Timing Rack</small></div>
+      <div id="door7" class="door hidden" onclick="onDoorClick(7)"><div>🚪 Door 7</div><small>Shift Bay</small></div>
+      <div id="door8" class="door hidden" onclick="onDoorClick(8)"><div>🚪 Door 8</div><small>Decoder Slot</small></div>
+      <div id="door9" class="door hidden" onclick="onDoorClick(9)"><div>🚪 Door 9</div><small>MUX Cabinet</small></div>
+      <div id="door10" class="door hidden" onclick="onDoorClick(10)"><div>🚪 Door 10</div><small>Final Vault</small></div>
     </div>
-    <div id="message"></div>
-    <div id="keys">
-      <span id="keyCount">🔑 Keys Collected: 0/10</span>
-    </div>
-    <div class="exit-door" id="exitDoor" onclick="escapeRoom()">
-      🔓 FINAL EXIT DOOR 🔓<br>
-      <span style="font-size: 16px;">Click to Escape!</span>
-    </div>
+
+    <div id="message">Find the first door to begin.</div>
+    <div id="keys"><span id="keyCount">🔑 Keys Collected: 0/10</span><div id="keyShelf" style="margin-top:8px;"></div></div>
+
+    <div class="exit-door" id="exitDoor" onclick="escapeRoom()">🔓 FINAL EXIT DOOR — Click to Escape!</div>
+
     <div class="victory-screen" id="victoryScreen">
-      <p>🎉🎉🎉 CONGRATULATIONS! 🎉🎉🎉</p>
-      <p>You have successfully escaped the DDCO Escape Room!</p>
-      <p>All 10 keys collected. All puzzles solved.</p>
-      <p>You are a true Digital Design & Computer Organization master! 🏆</p>
+      <h3>🎉 Escape Successful!</h3>
+      <p>You collected all keys and escaped the DDCO Escape Room. Well played.</p>
     </div>
   </div>
 
+  <div class="npc" id="npc">
+    <h4>Guide</h4>
+    <p id="npcText">I'll help you after you unlock a door.</p>
+    <div class="close" onclick="hideNpc()">✖ Close</div>
+  </div>
+
   <script>
+    // puzzles array with checks, hint and narrative
+    const puzzles = [
+      { q: "Binary Puzzle: What is the decimal value of 1011?", check: a => parseInt(a) === 11, hint: "Weights: 8 + 2 + 1", lootNote: "a brass key behind a binary poster", clue: "Check the poster near the resistor shelf." },
+      { q: "Logic Gate: NOT(OR(0,1,0)) = ?", check: a => parseInt(a) === 0, hint: "OR yields 1 → NOT flips it", lootNote: "a copper key under a loose tile", clue: "Look for the loose tile near the bench." },
+      { q: "Flip-Flop: If D=1 and you give a rising clock to a D flip-flop, Q becomes ?", check: a => parseInt(a) === 1, hint: "Q follows D on the clock edge", lootNote: "an iron key in a flip-flop diagram", clue: "Inspect the timing posters on the wall." },
+      { q: "Instruction: MOV R1, #5 → What value is in R1?", check: a => parseInt(a) === 5, hint: "Immediate load assigns 5", lootNote: "a silver key inside the manual", clue: "Peek inside the instruction manual on the shelf." },
+      { q: "Combinational: XOR(1,0,1) → result? (XOR of 3 inputs)", check: a => parseInt(a) === 0, hint: "1⊕0⊕1 = 0", lootNote: "a bronze key near the ALU", clue: "Search the ALU bench for a glint." },
+      { q: "Sequential: JK with J=1,K=1 on clock → state becomes ?", check: a => ["toggle","toggles","toggled"].includes(String(a).toLowerCase()), hint: "Both inputs 1 cause toggle", lootNote: "an obsidian key behind timing diagrams", clue: "Check behind the timing diagram posters." },
+      { q: "Assembly: R2 = 8; execute SHL R2 (shift left by 1). New value?", check: a => parseInt(a) === 16, hint: "Left shift multiplies by 2", lootNote: "a crystal key in the ALU shard", clue: "Look near the shift registers on the bench." },
+      { q: "Decoder: 2-to-4 decoder input '11' (binary) activates which output 0-3?", check: a => parseInt(a) === 3, hint: "11₂ = 3 decimal", lootNote: "an emerald key in a decoder socket", clue: "Inspect any empty decoder sockets." },
+      { q: "Multiplexer: 4-to-1 MUX select '10' chooses which input (0-3)?", check: a => parseInt(a) === 2, hint: "'10'₂ = 2", lootNote: "a sapphire key under a MUX chip", clue: "Slide open the MUX cabinet drawers." },
+      { q: "Final Riddle: 8 bits unsigned range 0-255. In 2's complement what's the signed range? (format like: -128 to 127)", check: a => String(a).includes("-128") && String(a).includes("127"), hint: "Half negative, half positive", lootNote: "the master key welded to the EXIT DOOR", clue: "The final vault glows — inspect the vault plaque." }
+    ];
+
     let keysCollected = 0;
 
     function startGame() {
       document.getElementById("introScreen").style.display = "none";
       document.getElementById("gameContainer").style.display = "block";
-      document.getElementById("message").innerText = "🎮 Game Started! Solve Door 1 to begin...";
+      document.getElementById("message").innerText = "You step into the room. The first door glows faintly — open it to begin.";
+      document.getElementById("door1").classList.add("pulse");
     }
 
-    function solvePuzzle(door) {
-      let answer;
-      switch (door) {
-        case 1:
-          answer = prompt("Binary Puzzle: What is the decimal value of 1011?");
-          if (parseInt(answer) === 11) unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
-        case 2:
-          answer = prompt("Logic Gate: AND(1,0) → NOT → ?");
-          if (parseInt(answer) === 1) unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
-        case 3:
-          answer = prompt("Flip-Flop: D=1, Clock Pulse → Q = ?");
-          if (parseInt(answer) === 1) unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
-        case 4:
-          answer = prompt("Instruction: MOV R1, #5 → What value is in R1?");
-          if (parseInt(answer) === 5) unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
-        case 5:
-          answer = prompt("Combinational Logic: What is the output of XOR(1,1)?");
-          if (parseInt(answer) === 0) unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
-        case 6:
-          answer = prompt("Sequential Circuit: In a JK flip-flop, if J=1 and K=1, what happens on clock pulse?");
-          if (answer.toLowerCase() === "toggle" || answer.toLowerCase() === "toggles") unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
-        case 7:
-          answer = prompt("Assembly: If R2 = 8 and we execute SHL R2 (shift left), what is the new value?");
-          if (parseInt(answer) === 16) unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
-        case 8:
-          answer = prompt("Decoder: A 2-to-4 decoder with inputs 11 (binary) activates which output line (0-3)?");
-          if (parseInt(answer) === 3) unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
-        case 9:
-          answer = prompt("Multiplexer: A 4-to-1 MUX with select lines 10 (binary) chooses which input (0-3)?");
-          if (parseInt(answer) === 2) unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
-        case 10:
-          answer = prompt("Final Riddle: I have 8 bits, I can represent numbers 0-255, but with 2's complement, what's my range?");
-          if (answer.toLowerCase().includes("-128") && answer.toLowerCase().includes("127")) unlockDoor(door);
-          else alert("❌ Wrong answer. Try again!");
-          break;
+    function onDoorClick(doorNum) {
+      const doorEl = document.getElementById(`door${doorNum}`);
+      // ignore clicks on already unlocked doors
+      if (doorEl.classList.contains("unlocked")) {
+        document.getElementById("message").innerText = `Door ${doorNum} is already open. Check for clues or the guide.`;
+        showNpc(`You've already opened Door ${doorNum}. Next clue: ${getNextClue(doorNum)}`);
+        return;
+      }
+
+      // confirm open
+      const open = confirm("You are entering the escape room now. Open this door?");
+      if (!open) {
+        document.getElementById("message").innerText = "You step back... maybe open it later.";
+        return;
+      }
+
+      // ask the riddle (with hint option)
+      const p = puzzles[doorNum - 1];
+      if (!p) {
+        alert("This door seems empty.");
+        return;
+      }
+
+      let attempt = prompt(`${p.q}\n\n(Type 'hint' for a hint)`);
+      if (attempt === null) { document.getElementById("message").innerText = "You close the door without answering."; return; }
+
+      if (String(attempt).trim().toLowerCase() === "hint") {
+        alert("Hint: " + p.hint);
+        attempt = prompt(p.q + "\n\n(Answer now)");
+        if (attempt === null) { document.getElementById("message").innerText = "You pause after the hint."; return; }
+      }
+
+      // evaluate
+      let ok = false;
+      try { ok = p.check(attempt); } catch(e){ ok = false; }
+
+      if (ok) {
+        unlockDoor(doorNum);
+        showNpc(`Nice! You found ${p.lootNote}. Hint: ${p.clue}`);
+      } else {
+        // give progressive feedback and small nudge
+        const tries = doorEl.dataset.tries ? parseInt(doorEl.dataset.tries) + 1 : 1;
+        doorEl.dataset.tries = tries;
+        const nudges = [
+          "Not quite — review the basic truth table or number weights.",
+          "Try converting binary/values to decimal first.",
+          "If stuck, type 'hint' next time for a clue."
+        ];
+        const nudge = nudges[Math.min(tries-1, nudges.length-1)];
+        alert(nudge);
+        document.getElementById("message").innerText = `Door ${doorNum} remains closed. ${nudge}`;
       }
     }
 
-    function unlockDoor(door) {
-      const doorElement = document.getElementById(`door${door}`);
-      doorElement.classList.add("unlocked");
-      doorElement.style.cursor = "default";
-      
-      const nextDoor = document.getElementById(`door${door + 1}`);
-      if (nextDoor) nextDoor.classList.remove("hidden");
-      
+    function unlockDoor(doorNum) {
+      const doorEl = document.getElementById(`door${doorNum}`);
+      doorEl.classList.add("unlocked");
+      doorEl.classList.remove("pulse");
+      doorEl.style.cursor = "default";
+
+      // reveal next door if exists
+      const next = document.getElementById(`door${doorNum + 1}`);
+      if (next) {
+        next.classList.remove("hidden");
+        // highlight next door so players can "find" it
+        next.classList.add("pulse");
+      }
+
+      // increment keys and update shelf
       keysCollected++;
       document.getElementById("keyCount").innerText = `🔑 Keys Collected: ${keysCollected}/10`;
-      
-      const messages = [
-        `✅ Door ${door} unlocked! You found a golden key!`,
-        `🎯 Door ${door} conquered! ${10 - keysCollected} doors remain!`,
-        `⭐ Door ${door} opened! You're on fire!`,
-        `💎 Door ${door} unlocked! You're unstoppable!`,
-        `🔓 Door ${door} has fallen! Almost there!`
-      ];
-      
-      const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-      document.getElementById("message").innerText = randomMsg;
-      
+      addKeyIcon(keysCollected);
+
+      document.getElementById("message").innerText = `✅ Door ${doorNum} unlocked! You found a key. Listen for the guide's hint.`;
+
+      // when last key, show exit
       if (keysCollected === 10) {
-        document.getElementById("message").innerText = "🚨 All doors unlocked! The EXIT DOOR has appeared! Click it to escape!";
         document.getElementById("exitDoor").style.display = "block";
+        document.getElementById("exitDoor").classList.add("pulse");
+        showNpc("All keys collected — the EXIT DOOR is revealed. Open it to escape.");
       }
+    }
+
+    function addKeyIcon(idx) {
+      const keyShelf = document.getElementById("keyShelf");
+      const span = document.createElement("span");
+      span.className = "key-icon";
+      const emojis = ["🔑","🗝️","🔐","🧩","💠","⚙️","🔸","🔹","⭐","🏆"];
+      span.innerText = emojis[(idx-1) % emojis.length];
+      span.title = `Key ${idx}`;
+      keyShelf.appendChild(span);
+    }
+
+    function showNpc(text) {
+      const npc = document.getElementById("npc");
+      const t = document.getElementById("npcText");
+      t.innerText = text;
+      npc.style.display = "block";
+    }
+    function hideNpc() { document.getElementById("npc").style.display = "none"; }
+
+    function getNextClue(doorNum) {
+      const next = puzzles[doorNum] || null;
+      return next ? next.clue : "Search the room thoroughly.";
     }
 
     function escapeRoom() {
+      const ok = confirm("Use the master key to open the EXIT DOOR and escape?");
+      if (!ok) return;
       document.getElementById("gameContainer").style.display = "none";
       document.getElementById("victoryScreen").style.display = "block";
     }
+
+    // small UX: pressing Enter on start focuses first door pulse
+    document.addEventListener("DOMContentLoaded", () => {
+      // ensure only door1 visible at start
+      for (let i = 2; i <= 10; i++) document.getElementById(`door${i}`).classList.add('hidden');
+    });
   </script>
 </body>
 </html>
+// ...existing code...
