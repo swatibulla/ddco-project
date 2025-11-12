@@ -151,11 +151,11 @@
   <script>
     // puzzles array with checks, hint and narrative
     const puzzles = [
-      { q: "Binary Puzzle: What is the decimal value of 1011?", check: a => parseInt(a) === 11, hint: "Weights: 8 + 2 + 1", lootNote: "a brass key behind a binary poster", clue: "Check the poster near the resistor shelf." },
-      { q: "Logic Gate: NOT(OR(0,1,0)) = ?", check: a => parseInt(a) === 0, hint: "OR yields 1 → NOT flips it", lootNote: "a copper key under a loose tile", clue: "Look for the loose tile near the bench." },
+      { q: "Binary Puzzle: What is the decimal value of 1011?", check: a => parseInt(a) === 11,  lootNote: "a brass key behind a binary poster", clue: "Check the poster near the resistor shelf." },
+      { q: "Logic Gate: NOT(OR(0,1,0)) = ?", check: a => parseInt(a) === 0,  lootNote: "a copper key under a loose tile", clue: "Look for the loose tile near the bench." },
       { q: "Flip-Flop: If D=1 and you give a rising clock to a D flip-flop, Q becomes ?", check: a => parseInt(a) === 1, hint: "Q follows D on the clock edge", lootNote: "an iron key in a flip-flop diagram", clue: "Inspect the timing posters on the wall." },
-      { q: "Instruction: MOV R1, #5 → What value is in R1?", check: a => parseInt(a) === 5, hint: "Immediate load assigns 5", lootNote: "a silver key inside the manual", clue: "Peek inside the instruction manual on the shelf." },
-      { q: "Combinational: XOR(1,0,1) → result? (XOR of 3 inputs)", check: a => parseInt(a) === 0, hint: "1⊕0⊕1 = 0", lootNote: "a bronze key near the ALU", clue: "Search the ALU bench for a glint." },
+      { q: "Instruction: MOV R1, #5 → What value is in R1?", check: a => parseInt(a) === 5,  lootNote: "a silver key inside the manual", clue: "Peek inside the instruction manual on the shelf." },
+      { q: "Combinational: XOR(1,0,1) → result? (XOR of 3 inputs)", check: a => parseInt(a) === 0, lootNote: "a bronze key near the ALU", clue: "Search the ALU bench for a glint." },
       { q: "Sequential: JK with J=1,K=1 on clock → state becomes ?", check: a => ["toggle","toggles","toggled"].includes(String(a).toLowerCase()), hint: "Both inputs 1 cause toggle", lootNote: "an obsidian key behind timing diagrams", clue: "Check behind the timing diagram posters." },
       { q: "Assembly: R2 = 8; execute SHL R2 (shift left by 1). New value?", check: a => parseInt(a) === 16, hint: "Left shift multiplies by 2", lootNote: "a crystal key in the ALU shard", clue: "Look near the shift registers on the bench." },
       { q: "Decoder: 2-to-4 decoder input '11' (binary) activates which output 0-3?", check: a => parseInt(a) === 3, hint: "11₂ = 3 decimal", lootNote: "an emerald key in a decoder socket", clue: "Inspect any empty decoder sockets." },
