@@ -90,12 +90,12 @@
     }
 
     function unlockDoor(door) {
-      document.getElementById(door${door}).style.backgroundColor = "green";
-      const nextDoor = document.getElementById(door${door + 1});
+      document.getElementById(`door${door}`).style.backgroundColor = "green";
+      const nextDoor = document.getElementById(`door${door + 1}`);
       if (nextDoor) nextDoor.classList.remove("hidden");
       keysCollected++;
-      document.getElementById("keys").innerText = 🔑 Keys Collected: ${keysCollected};
-      document.getElementById("message").innerText = ✅ Door ${door} unlocked! You found a key!;
+      document.getElementById("keys").innerText = `🔑 Keys Collected: ${keysCollected}`;
+      document.getElementById("message").innerText = `✅ Door ${door} unlocked! You found a key!`;
       if (door === 5) {
         document.getElementById("message").innerText = "🎉 You escaped all DDCO doors and collected all keys!";
       }
