@@ -25,18 +25,11 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: 
-        radial-gradient(circle at 20% 50%, rgba(0, 200, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255, 123, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 20%, rgba(0, 255, 176, 0.08) 0%, transparent 50%);
+      background-image: radial-gradient(circle at 20% 50%, rgba(0, 200, 255, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 123, 255, 0.08) 0%, transparent 50%);
+      background-size: 100% 100%;
+      background-attachment: fixed;
       z-index: -2;
       pointer-events: none;
-      animation: gradientShift 15s ease infinite;
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.8; }
     }
 
     body::after {
@@ -46,9 +39,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: 
-        linear-gradient(0deg, transparent 24%, rgba(0, 200, 255, 0.05) 25%, rgba(0, 200, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 200, 255, 0.05) 75%, rgba(0, 200, 255, 0.05) 76%, transparent 77%, transparent),
-        linear-gradient(90deg, transparent 24%, rgba(0, 200, 255, 0.05) 25%, rgba(0, 200, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 200, 255, 0.05) 75%, rgba(0, 200, 255, 0.05) 76%, transparent 77%, transparent);
+      background-image: linear-gradient(0deg, transparent 24%, rgba(0, 200, 255, 0.03) 25%, rgba(0, 200, 255, 0.03) 26%, transparent 27%, transparent 74%, rgba(0, 200, 255, 0.03) 75%, rgba(0, 200, 255, 0.03) 76%, transparent 77%, transparent);
       background-size: 50px 50px;
       z-index: -1;
       pointer-events: none;
@@ -58,17 +49,8 @@
       margin-top: 10px;
       font-size: 48px;
       color: #00ffff;
-      text-shadow: 
-        0 0 10px rgba(0, 255, 255, 0.5),
-        0 0 20px rgba(0, 200, 255, 0.3),
-        0 0 30px rgba(255, 0, 200, 0.2);
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 200, 255, 0.3);
       letter-spacing: 2px;
-      animation: glowPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes glowPulse {
-      0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 200, 255, 0.3), 0 0 30px rgba(255, 0, 200, 0.2); }
-      50% { text-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 200, 255, 0.6), 0 0 60px rgba(255, 0, 200, 0.4); }
     }
 
     #timer {
@@ -78,28 +60,17 @@
       font-size: 28px;
       font-weight: 700;
       color: #00ff00;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.95);
       padding: 12px 20px;
       border-radius: 10px;
       border: 3px solid #00ff00;
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5), inset 0 0 10px rgba(0, 255, 0, 0.2);
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
       z-index: 999;
       font-family: 'Courier New', monospace;
     }
 
-    #timer.warning {
-      color: #ffff00;
-      border-color: #ffff00;
-      box-shadow: 0 0 20px rgba(255, 255, 0, 0.5), inset 0 0 10px rgba(255, 255, 0, 0.2);
-    }
-
-    #timer.danger {
-      color: #ff0000;
-      border-color: #ff0000;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7), inset 0 0 10px rgba(255, 0, 0, 0.3);
-      animation: blink 0.5s infinite;
-    }
-
+    #timer.warning { color: #ffff00; border-color: #ffff00; }
+    #timer.danger { color: #ff0000; border-color: #ff0000; animation: blink 0.5s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
     .intro-screen {
@@ -111,16 +82,24 @@
       font-size: 18px;
       line-height: 1.8;
       width: 92%;
-      max-width: 900px;
-      box-shadow: 
-        0 0 30px rgba(0, 229, 255, 0.3),
-        inset 0 0 20px rgba(0, 229, 255, 0.1);
-      backdrop-filter: blur(10px);
+      max-width: 950px;
+      box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
     }
 
-    .intro-screen p {
-      margin: 12px 0;
+    .instructions-box {
+      background: rgba(255, 184, 107, 0.1);
+      border-left: 4px solid #ffb86b;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: left;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
     }
+
+    .instructions-box h3 { color: #ffb86b; margin-bottom: 12px; }
+    .instructions-box ol { color: #cfeee7; line-height: 2; padding-left: 25px; }
 
     .start-button {
       margin-top: 25px;
@@ -136,10 +115,7 @@
       transition: all 0.3s ease;
     }
 
-    .start-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
-    }
+    .start-button:hover { transform: scale(1.05); }
 
     .game-container { display: none; margin-top: 20px; }
 
@@ -152,7 +128,6 @@
       padding: 20px;
       background: rgba(0, 0, 0, 0.3);
       border-radius: 15px;
-      backdrop-filter: blur(5px);
     }
 
     .door {
@@ -169,54 +144,18 @@
       border-radius: 12px;
       font-size: 18px;
       color: #ffe8c9;
-      box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.6),
-        inset 0 0 15px rgba(255, 184, 107, 0.1);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
       transition: all 0.3s ease;
       position: relative;
     }
 
-    .door::before {
-      content: '🔒';
-      position: absolute;
-      top: 5px;
-      right: 8px;
-      font-size: 16px;
-    }
-
-    .door:hover {
-      transform: translateY(-8px) scale(1.03);
-      box-shadow: 0 15px 35px rgba(255, 184, 107, 0.3), inset 0 0 15px rgba(255, 184, 107, 0.2);
-    }
-
+    .door::before { content: '🔒'; position: absolute; top: 5px; right: 8px; font-size: 16px; }
+    .door:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 15px 35px rgba(255, 184, 107, 0.3); }
     .door.hidden { display: none; }
-
-    .door.unlocked {
-      background: linear-gradient(135deg, #0af3a3, #02785f);
-      color: #000;
-      border-color: #00ffb3;
-      box-shadow: 
-        0 8px 25px rgba(0, 255, 176, 0.4),
-        inset 0 0 15px rgba(0, 255, 176, 0.2);
-      transform: none;
-      cursor: default;
-    }
-
-    .door.unlocked::before {
-      content: '🔓';
-      animation: unlock 0.6s ease;
-    }
-
-    @keyframes unlock {
-      0% { transform: rotate(0deg); }
-      50% { transform: rotate(-20deg); }
-      100% { transform: rotate(-30deg); }
-    }
-
-    .door small {
-      font-size: 12px;
-      opacity: 0.8;
-    }
+    .door.unlocked { background: linear-gradient(135deg, #0af3a3, #02785f); color: #000; border-color: #00ffb3; cursor: default; }
+    .door.unlocked::before { content: '🔓'; }
+    .door small { font-size: 12px; opacity: 0.8; }
+    .door-attempts { font-size: 11px; color: #ffb86b; margin-top: 6px; font-weight: bold; }
 
     #message {
       margin-top: 20px;
@@ -239,17 +178,7 @@
       border-radius: 10px;
     }
 
-    .key-icon {
-      display: inline-block;
-      margin: 0 8px;
-      font-size: 24px;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
+    .key-icon { display: inline-block; margin: 0 8px; font-size: 24px; }
 
     .npc {
       position: fixed;
@@ -261,32 +190,18 @@
       padding: 18px;
       border-radius: 12px;
       max-width: 340px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 198, 255, 0.3);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
       display: none;
       z-index: 200;
-      backdrop-filter: blur(10px);
     }
 
-    .npc::before {
-      content: '🤖';
-      display: block;
-      font-size: 28px;
-      margin-bottom: 8px;
-    }
-
-    .npc h4 { margin: 0 0 8px 0; font-size: 16px; color: #bff7ff; text-transform: uppercase; letter-spacing: 1px; }
-
+    .npc::before { content: '🤖'; display: block; font-size: 28px; margin-bottom: 8px; }
+    .npc h4 { margin: 0 0 8px 0; font-size: 16px; color: #bff7ff; }
     .npc p { margin: 0; font-size: 14px; color: #eafefb; line-height: 1.5; }
-
-    .npc .close { margin-top: 10px; display: block; text-align: right; font-size: 13px; color: #9be8ff; cursor: pointer; }
+    .npc .close { margin-top: 10px; text-align: right; font-size: 13px; color: #9be8ff; cursor: pointer; }
 
     .pulse { animation: pulse 1.2s infinite; }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(255, 184, 107, 0.1), 0 0 15px rgba(255, 184, 107, 0.2); }
-      50% { box-shadow: 0 8px 25px rgba(255, 184, 107, 0.3), inset 0 0 15px rgba(255, 184, 107, 0.2), 0 0 30px rgba(255, 184, 107, 0.4); }
-      100% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(255, 184, 107, 0.1), 0 0 15px rgba(255, 184, 107, 0.2); }
-    }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 184, 107, 0.2); } 50% { box-shadow: 0 8px 25px rgba(255, 184, 107, 0.3), 0 0 30px rgba(255, 184, 107, 0.4); } }
 
     .exit-door {
       margin-top: 25px;
@@ -302,54 +217,58 @@
       font-weight: 700;
     }
 
-    .exit-door:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 50px rgba(255, 123, 255, 0.6);
-    }
+    .exit-door:hover { transform: scale(1.05); }
 
-    .victory-screen {
+    .victory-screen { display: none; padding: 40px; margin-top: 20px; border: 3px solid #ffd36b; border-radius: 15px; background: linear-gradient(135deg, rgba(255, 211, 107, 0.1), rgba(255, 123, 255, 0.1)); color: #fff; box-shadow: 0 0 40px rgba(255, 211, 107, 0.4); }
+    .victory-screen h3 { color: #ffff00; font-size: 36px; margin-bottom: 15px; }
+
+    .timeout-screen { display: none; padding: 40px; margin-top: 20px; border: 3px solid #ff0000; border-radius: 15px; background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(255, 0, 0, 0.05)); color: #ff0000; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 0, 0.4); }
+
+    .room-title { margin: 20px 0 10px 0; font-size: 24px; color: #00e5ff; text-transform: uppercase; }
+
+    /* Text Puzzle Modal */
+    .text-puzzle-modal {
       display: none;
-      padding: 40px;
-      margin-top: 20px;
-      border: 3px solid #ffd36b;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 300;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .text-puzzle-modal.show { display: flex; }
+
+    .modal-content {
+      background: linear-gradient(135deg, rgba(10, 14, 39, 0.98), rgba(26, 26, 62, 0.98));
+      padding: 30px;
       border-radius: 15px;
-      background: linear-gradient(135deg, rgba(255, 211, 107, 0.1), rgba(255, 123, 255, 0.1));
-      color: #fff;
-      box-shadow: 0 0 40px rgba(255, 211, 107, 0.4);
+      border: 3px solid #00e5ff;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 0 40px rgba(0, 229, 255, 0.4);
     }
 
-    .victory-screen h3 {
-      color: #ffff00;
-      font-size: 36px;
-      margin-bottom: 15px;
-      text-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
-    }
+    .modal-content h3 { color: #00ffff; margin-bottom: 20px; }
+    .modal-question { color: #ffff00; font-size: 18px; margin: 20px 0; font-weight: 600; }
+    .modal-attempts { font-size: 14px; color: #ff7bff; margin: 10px 0; font-weight: bold; }
+    .modal-input { padding: 12px; width: 90%; border-radius: 6px; border: 2px solid #00e5ff; background: rgba(0, 229, 255, 0.1); color: #cfeee7; font-size: 16px; margin: 15px 0; text-align: center; }
 
-    .timeout-screen {
-      display: none;
-      padding: 40px;
+    .modal-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
       margin-top: 20px;
-      border: 3px solid #ff0000;
-      border-radius: 15px;
-      background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(255, 0, 0, 0.05));
-      color: #ff0000;
-      text-align: center;
-      box-shadow: 0 0 40px rgba(255, 0, 0, 0.4);
     }
 
-    .timeout-screen h3 {
-      font-size: 36px;
-      animation: blink 0.6s infinite;
-    }
-
-    .room-title {
-      margin: 20px 0 10px 0;
-      font-size: 24px;
-      color: #00e5ff;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
-    }
+    .modal-btn { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 16px; transition: all 0.3s ease; }
+    .modal-submit { background: linear-gradient(135deg, #00ff88, #00cc66); color: #000; }
+    .modal-submit:hover { transform: scale(1.05); }
+    .modal-close { background: linear-gradient(135deg, #ff3333, #cc0000); color: #fff; }
+    .modal-close:hover { transform: scale(1.05); }
 
     /* Image Puzzle Modal */
     .image-puzzle-modal {
@@ -366,104 +285,31 @@
       overflow-y: auto;
     }
 
-    .image-puzzle-modal.show {
-      display: flex;
-    }
-
-    .modal-content {
-      background: linear-gradient(135deg, rgba(10, 14, 39, 0.98), rgba(26, 26, 62, 0.98));
-      padding: 30px;
-      border-radius: 15px;
-      border: 3px solid #00e5ff;
-      max-width: 700px;
-      width: 90%;
-      max-height: 85vh;
-      overflow-y: auto;
-      box-shadow: 0 0 40px rgba(0, 229, 255, 0.4);
-    }
-
-    .modal-content h3 {
-      color: #00ffff;
-      margin-bottom: 20px;
-      text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
-    }
-
-    .modal-image {
-      max-width: 100%;
-      border-radius: 10px;
-      margin: 20px 0;
-      border: 2px solid #ffb86b;
-      box-shadow: 0 0 20px rgba(255, 184, 107, 0.3);
-    }
-
-    .modal-question {
-      color: #ffff00;
-      font-size: 18px;
-      margin: 20px 0;
-      font-weight: 600;
-    }
-
-    .modal-input {
-      padding: 12px;
-      width: 90%;
-      border-radius: 6px;
-      border: 2px solid #00e5ff;
-      background: rgba(0, 229, 255, 0.1);
-      color: #cfeee7;
-      font-size: 16px;
-      margin: 15px 0;
-      text-align: center;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .modal-btn {
-      padding: 12px 25px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 16px;
-      transition: all 0.3s ease;
-    }
-
-    .modal-submit {
-      background: linear-gradient(135deg, #00ff88, #00cc66);
-      color: #000;
-    }
-
-    .modal-submit:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-    }
-
-    .modal-close {
-      background: linear-gradient(135deg, #ff3333, #cc0000);
-      color: #fff;
-    }
-
-    .modal-close:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(255, 51, 51, 0.5);
-    }
+    .image-puzzle-modal.show { display: flex; }
+    .modal-image { max-width: 100%; border-radius: 10px; margin: 20px 0; border: 2px solid #ffb86b; }
   </style>
 </head>
 <body>
   <h1>🔐 DDCO ESCAPE ROOM 🔐</h1>
-
-  <div id="timer">⏱️ 15:00</div>
+  <div id="timer">⏱️ 10:00</div>
 
   <div class="intro-screen" id="introScreen">
     <p><strong style="color: #00ffff; font-size: 24px;">⚡ Welcome to the Digital Logic Escape Room ⚡</strong></p>
-    <p>You are trapped inside a high-tech laboratory filled with mysterious circuit boards, binary puzzles, and digital mazes. The only way out is to unlock all 15 doors by solving DDCO (Digital Design & Computer Organization) riddles.</p>
-    <p><strong>15 Doors • 15 Puzzles (Text + Image) • 15 Keys • 15 Minutes ⏱️</strong></p>
-    <p>Analyze logic gates, decode binary sequences, understand flip-flops, and master digital concepts through both text and visual puzzles. Each correct answer unlocks a door and reveals the location of the next challenge.</p>
-    <p style="color: #ff7bff; font-size: 16px;">⚠️ The timer is running. Can you escape before time runs out? ⚠️</p>
+    <p>You are trapped inside a high-tech laboratory. Unlock all 15 doors by solving DDCO puzzles.</p>
+    
+    <div class="instructions-box">
+      <h3>📋 How to Play:</h3>
+      <ol>
+        <li><strong>Click a door</strong> to attempt solving the puzzle</li>
+        <li><strong>Text & Image Puzzles:</strong> Answer the question in the modal</li>
+        <li><strong>Correct Answer:</strong> Door unlocks and next door becomes available</li>
+        <li><strong>⚠️ Only 3 Attempts per Door!</strong></li>
+        <li><strong>Collect all 15 keys</strong> to unlock the final exit door</li>
+        <li><strong>⏰ Beat the timer!</strong> You have 10 minutes to escape</li>
+      </ol>
+    </div>
+
+    <p><strong>15 Doors • 15 Puzzles • 10 Minutes • 3 Attempts per Door ⏱️</strong></p>
     <button class="start-button" onclick="startGame()">🚪 ENTER THE LAB</button>
   </div>
 
@@ -471,21 +317,21 @@
     <div class="room-title">📡 CIRCUIT LABORATORY 📡</div>
     
     <div id="game">
-      <div id="door1" class="door" onclick="onDoorClick(1)"><div>🚪 DOOR 1</div><small>Binary Corner</small></div>
-      <div id="door2" class="door hidden" onclick="onDoorClick(2)"><div>🚪 DOOR 2</div><small>Logic Shelf</small></div>
-      <div id="door3" class="door hidden" onclick="onDoorClick(3)"><div>🚪 DOOR 3</div><small>Flip-Flop Wall</small></div>
-      <div id="door4" class="door hidden" onclick="onDoorClick(4)"><div>🚪 DOOR 4</div><small>Instruction Nook</small></div>
-      <div id="door5" class="door hidden" onclick="onDoorClick(5)"><div>🚪 DOOR 5</div><small>ALU Bench</small></div>
-      <div id="door6" class="door hidden" onclick="onDoorClick(6)"><div>🚪 DOOR 6</div><small>Timing Rack</small></div>
-      <div id="door7" class="door hidden" onclick="onDoorClick(7)"><div>🚪 DOOR 7</div><small>Shift Bay</small></div>
-      <div id="door8" class="door hidden" onclick="onDoorClick(8)"><div>🚪 DOOR 8</div><small>Decoder Slot</small></div>
-      <div id="door9" class="door hidden" onclick="onDoorClick(9)"><div>🚪 DOOR 9</div><small>MUX Cabinet</small></div>
-      <div id="door10" class="door hidden" onclick="onDoorClick(10)"><div>🚪 DOOR 10</div><small>Final Vault</small></div>
-      <div id="door11" class="door hidden" onclick="onDoorClick(11)"><div>🚪 DOOR 11</div><small>Truth Table</small></div>
-      <div id="door12" class="door hidden" onclick="onDoorClick(12)"><div>🚪 DOOR 12</div><small>Circuit Board</small></div>
-      <div id="door13" class="door hidden" onclick="onDoorClick(13)"><div>🚪 DOOR 13</div><small>Memory Map</small></div>
-      <div id="door14" class="door hidden" onclick="onDoorClick(14)"><div>🚪 DOOR 14</div><small>Pipeline Stage</small></div>
-      <div id="door15" class="door hidden" onclick="onDoorClick(15)"><div>🚪 DOOR 15</div><small>Master Vault</small></div>
+      <div id="door1" class="door" onclick="onDoorClick(1)"><div>🚪 DOOR 1</div><small>Binary Corner</small><div class="door-attempts" id="attempts1">3️⃣ 3/3</div></div>
+      <div id="door2" class="door hidden" onclick="onDoorClick(2)"><div>🚪 DOOR 2</div><small>Logic Shelf</small><div class="door-attempts" id="attempts2">3️⃣ 3/3</div></div>
+      <div id="door3" class="door hidden" onclick="onDoorClick(3)"><div>🚪 DOOR 3</div><small>Flip-Flop Wall</small><div class="door-attempts" id="attempts3">3️⃣ 3/3</div></div>
+      <div id="door4" class="door hidden" onclick="onDoorClick(4)"><div>🚪 DOOR 4</div><small>Instruction Nook</small><div class="door-attempts" id="attempts4">3️⃣ 3/3</div></div>
+      <div id="door5" class="door hidden" onclick="onDoorClick(5)"><div>🚪 DOOR 5</div><small>ALU Bench</small><div class="door-attempts" id="attempts5">3️⃣ 3/3</div></div>
+      <div id="door6" class="door hidden" onclick="onDoorClick(6)"><div>🚪 DOOR 6</div><small>Timing Rack</small><div class="door-attempts" id="attempts6">3️⃣ 3/3</div></div>
+      <div id="door7" class="door hidden" onclick="onDoorClick(7)"><div>🚪 DOOR 7</div><small>Shift Bay</small><div class="door-attempts" id="attempts7">3️⃣ 3/3</div></div>
+      <div id="door8" class="door hidden" onclick="onDoorClick(8)"><div>🚪 DOOR 8</div><small>Decoder Slot</small><div class="door-attempts" id="attempts8">3️⃣ 3/3</div></div>
+      <div id="door9" class="door hidden" onclick="onDoorClick(9)"><div>🚪 DOOR 9</div><small>MUX Cabinet</small><div class="door-attempts" id="attempts9">3️⃣ 3/3</div></div>
+      <div id="door10" class="door hidden" onclick="onDoorClick(10)"><div>🚪 DOOR 10</div><small>Final Vault</small><div class="door-attempts" id="attempts10">3️⃣ 3/3</div></div>
+      <div id="door11" class="door hidden" onclick="onDoorClick(11)"><div>🚪 DOOR 11</div><small>Truth Table</small><div class="door-attempts" id="attempts11">3️⃣ 3/3</div></div>
+      <div id="door12" class="door hidden" onclick="onDoorClick(12)"><div>🚪 DOOR 12</div><small>Circuit Board</small><div class="door-attempts" id="attempts12">3️⃣ 3/3</div></div>
+      <div id="door13" class="door hidden" onclick="onDoorClick(13)"><div>🚪 DOOR 13</div><small>Memory Map</small><div class="door-attempts" id="attempts13">3️⃣ 3/3</div></div>
+      <div id="door14" class="door hidden" onclick="onDoorClick(14)"><div>🚪 DOOR 14</div><small>Pipeline Stage</small><div class="door-attempts" id="attempts14">3️⃣ 3/3</div></div>
+      <div id="door15" class="door hidden" onclick="onDoorClick(15)"><div>🚪 DOOR 15</div><small>Master Vault</small><div class="door-attempts" id="attempts15">3️⃣ 3/3</div></div>
     </div>
 
     <div id="message">🔍 Locate the first door and open it to begin your escape...</div>
@@ -495,24 +341,38 @@
 
     <div class="victory-screen" id="victoryScreen">
       <h3>🎉 ESCAPE SUCCESSFUL! 🎉</h3>
-      <p>You have successfully escaped the DDCO Laboratory!</p>
-      <p>All 15 digital keys have been collected. The exit door is open. You are FREE.</p>
+      <p>All 15 digital keys have been collected. You are FREE.</p>
       <p id="victoryTime" style="color: #00ffff; font-weight: 700; margin-top: 15px;"></p>
     </div>
 
     <div class="timeout-screen" id="timeoutScreen">
       <h3>⏰ SYSTEM LOCKDOWN ⏰</h3>
       <p>Your time has expired. All doors have locked permanently.</p>
-      <p>You managed to escape <span id="finalKeys">0</span>/15 rooms before the system sealed.</p>
-      <p style="margin-top: 20px;">Better luck next time...</p>
+      <p>You managed to escape <span id="finalKeys">0</span>/15 rooms.</p>
     </div>
   </div>
 
+  <!-- Text Puzzle Modal -->
+  <div class="text-puzzle-modal" id="textPuzzleModal">
+    <div class="modal-content">
+      <h3 id="textModalTitle">❓ Puzzle</h3>
+      <p class="modal-question" id="textModalQuestion">What's your answer?</p>
+      <p class="modal-attempts" id="textModalAttempts">Attempts Remaining: 3/3</p>
+      <input type="text" id="textPuzzleInput" class="modal-input" placeholder="Enter your answer..." />
+      <div class="modal-buttons">
+        <button class="modal-btn modal-submit" onclick="submitTextPuzzle()">✓ Submit</button>
+        <button class="modal-btn modal-close" onclick="closeTextModal()">✕ Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Puzzle Modal -->
   <div class="image-puzzle-modal" id="imagePuzzleModal">
     <div class="modal-content">
       <h3 id="modalTitle">🖼️ Image Puzzle</h3>
       <img id="modalImage" src="" alt="Puzzle" class="modal-image" />
       <p class="modal-question" id="modalQuestion">What's your answer?</p>
+      <p class="modal-attempts" id="modalAttempts">Attempts Remaining: 3/3</p>
       <input type="text" id="imagePuzzleInput" class="modal-input" placeholder="Enter your answer..." />
       <div class="modal-buttons">
         <button class="modal-btn modal-submit" onclick="submitImagePuzzle()">✓ Submit</button>
@@ -534,29 +394,46 @@
       { q: "Flip-Flop: If D=1 and you give a rising clock to a D flip-flop, Q becomes ?", check: a => parseInt(a) === 1, lootNote: "an iron key in a flip-flop diagram", clue: "Inspect the timing posters on the wall." },
       { q: "Instruction: MOV R1, #5 → What value is in R1?", check: a => parseInt(a) === 5, lootNote: "a silver key inside the manual", clue: "Peek inside the instruction manual on the shelf." },
       { q: "Combinational: XOR(1,0,1) → result? (XOR of 3 inputs)", check: a => parseInt(a) === 0, lootNote: "a bronze key near the ALU", clue: "Search the ALU bench for a glint." },
-      { q: "Sequential: JK with J=1,K=1 on clock → state becomes ?", check: a => ["toggle","toggles","toggled"].includes(String(a).toLowerCase()), lootNote: "an obsidian key behind timing diagrams", clue: "Check behind the timing diagram posters." },
+      { q: "Sequential: JK with J=1,K=1 on clock → state becomes ? (Hint: it is a word)", check: a => ["toggle","toggles","toggled"].includes(String(a).toLowerCase()), lootNote: "an obsidian key behind timing diagrams", clue: "Check behind the timing diagram posters." },
       { q: "Assembly: R2 = 8; execute SHL R2 (shift left by 1). New value?", check: a => parseInt(a) === 16, lootNote: "a crystal key in the ALU shard", clue: "Look near the shift registers on the bench." },
       { q: "Decoder: 2-to-4 decoder input '11' (binary) activates which output 0-3?", check: a => parseInt(a) === 3, lootNote: "an emerald key in a decoder socket", clue: "Inspect any empty decoder sockets." },
       { q: "Multiplexer: 4-to-1 MUX select '10' chooses which input (0-3)?", check: a => parseInt(a) === 2, lootNote: "a sapphire key under a MUX chip", clue: "Slide open the MUX cabinet drawers." },
-      { q: "Final Riddle: 8 bits unsigned range 0-255. In 2's complement what's the signed range? (format like: -128 to 127)", check: a => String(a).includes("-128") && String(a).includes("127"), lootNote: "the master key welded to the EXIT DOOR", clue: "The final vault glows — inspect the vault plaque." },
+      { q: "Final Riddle: 8 bits unsigned range 0-255. In 2's complement what's the signed range?", check: a => String(a).includes("-128") && String(a).includes("127"), lootNote: "the master key welded to the EXIT DOOR", clue: "The final vault glows — inspect the vault plaque." },
       
-      // IMAGE PUZZLES (5 new)
       { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='300' viewBox='0 0 500 300'%3E%3Crect fill='%23071a20' width='500' height='300'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='24' fill='%2300e5ff' font-weight='bold'%3EAnd Gate Truth Table%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='100' y='100' font-size='18' fill='%23cfeee7' font-weight='bold'%3EA  B  Output%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='100' y='150' font-size='18' fill='%23cfeee7'%3E0  0    0%3C/text%3E%3Ctext x='100' y='180' font-size='18' fill='%23cfeee7'%3E0  1    0%3C/text%3E%3Ctext x='100' y='210' font-size='18' fill='%23cfeee7'%3E1  0    0%3C/text%3E%3Ctext x='100' y='240' font-size='18' fill='%23ffff00' font-weight='bold'%3E1  1    ?%3C/text%3E%3Cline x1='40' y1='255' x2='460' y2='255' stroke='%23ffb86b' stroke-width='2'/%3E%3C/svg%3E", q: "From the AND gate truth table, what is the output when A=1 and B=1?", check: a => parseInt(a) === 1, lootNote: "a jade key from the truth table vault", clue: "Check the logic analyzer in the corner." },
       
       { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='320' viewBox='0 0 500 320'%3E%3Crect fill='%23071a20' width='500' height='320'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3E8-Bit Register: Find Bit Value%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Crect x='60' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='80' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E7%3C/text%3E%3Crect x='110' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='130' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E6%3C/text%3E%3Crect x='160' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='180' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E5%3C/text%3E%3Crect x='210' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='230' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E4%3C/text%3E%3Crect x='260' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='280' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E3%3C/text%3E%3Crect x='310' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='330' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E2%3C/text%3E%3Crect x='360' y='90' width='40' height='40' fill='%23ffff00' stroke='%23ffff00' stroke-width='2'/%3E%3Ctext x='380' y='120' text-anchor='middle' font-size='14' fill='%23000' font-weight='bold'%3E2%5E1%3C/text%3E%3Crect x='410' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='430' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E0%3C/text%3E%3Ctext x='250' y='170' text-anchor='middle' font-size='16' fill='%23cfeee7'%3ERegister Value: 11010110%3C/text%3E%3Ctext x='250' y='210' text-anchor='middle' font-size='16' fill='%23ffff00'%3EWhat is the value of 2%5E1 (Highlighted)?%3C/text%3E%3C/svg%3E", q: "The highlighted bit represents 2^1. What is 2^1?", check: a => parseInt(a) === 2, lootNote: "a gold key from the register chamber", clue: "Review binary weights on the shelf." },
       
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='320' viewBox='0 0 500 320'%3E%3Crect fill='%23071a20' width='500' height='320'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3EMUX (4-to-1) Selection Table%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='100' y='100' font-size='16' fill='%23cfeee7' font-weight='bold'%3ES1  S0  Output%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='100' y='150' font-size='16' fill='%23cfeee7'%3E0   0   I0%3C/text%3E%3Ctext x='100' y='180' font-size='16' fill='%23cfeee7'%3E0   1   I1%3C/text%3E%3Ctext x='100' y='210' font-size='16' fill='%23cfeee7'%3E1   0   I2%3C/text%3E%3Ctext x='100' y='240' font-size='16' fill='%23ffff00' font-weight='bold'%3E1   1   ?%3C/text%3E%3Cline x1='40' y1='255' x2='460' y2='255' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='250' y='290' text-anchor='middle' font-size='15' fill='%23ffff00'%3EWhen S1=1, S0=1, which input is selected?%3C/text%3E%3C/svg%3E", q: "When S1=1 and S0=1, which input (I0, I1, I2, or I3) is selected? Type just the name (e.g., I3)", check: a => String(a).toLowerCase() === "i3", lootNote: "a platinum key from the multiplexer nest", clue: "Check selector diagrams near control panel." },
+      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='320' viewBox='0 0 500 320'%3E%3Crect fill='%23071a20' width='500' height='320'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3EMUX (4-to-1) Selection Table%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='100' y='100' font-size='16' fill='%23cfeee7' font-weight='bold'%3ES1  S0  Output%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='100' y='150' font-size='16' fill='%23cfeee7'%3E0   0   I0%3C/text%3E%3Ctext x='100' y='180' font-size='16' fill='%23cfeee7'%3E0   1   I1%3C/text%3E%3Ctext x='100' y='210' font-size='16' fill='%23cfeee7'%3E1   0   I2%3C/text%3E%3Ctext x='100' y='240' font-size='16' fill='%23ffff00' font-weight='bold'%3E1   1   ?%3C/text%3E%3Cline x1='40' y1='255' x2='460' y2='255' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='250' y='290' text-anchor='middle' font-size='15' fill='%23ffff00'%3EWhen S1=1, S0=1, which input is selected?%3C/text%3E%3C/svg%3E", q: "When S1=1 and S0=1, which input (I0, I1, I2, or I3) is selected? (Enter: I3)", check: a => String(a).trim().toUpperCase() === "I3", lootNote: "a platinum key from the multiplexer nest", clue: "Check selector diagrams near control panel." },
       
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='300' viewBox='0 0 500 300'%3E%3Crect fill='%23071a20' width='500' height='300'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3E4-Bit Counter Sequence%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='120' y='100' font-size='16' fill='%23cfeee7' font-weight='bold'%3EStep  Binary Value%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='120' y='150' font-size='16' fill='%23cfeee7'%3E0      0000%3C/text%3E%3Ctext x='120' y='180' font-size='16' fill='%23cfeee7'%3E1      0001%3C/text%3E%3Ctext x='120' y='210' font-size='16' fill='%23cfeee7'%3E2      0010%3C/text%3E%3Ctext x='120' y='240' font-size='16' fill='%23ffff00' font-weight='bold'%3E3      ????%3C/text%3E%3Cline x1='40' y1='255' x2='460' y2='255' stroke='%23ffb86b' stroke-width='2'/%3E%3C/svg%3E", q: "In a 4-bit binary counter, after 0000, 0001, 0010, what comes next? (Step 3 in binary)", check: a => String(a) === "0011", lootNote: "a diamond key from the counter chamber", clue: "Study binary increment patterns." },
+      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='300' viewBox='0 0 500 300'%3E%3Crect fill='%23071a20' width='500' height='300'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3E4-Bit Counter Sequence%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='120' y='100' font-size='16' fill='%23cfeee7' font-weight='bold'%3EStep  Binary Value%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='120' y='150' font-size='16' fill='%23cfeee7'%3E0      0000%3C/text%3E%3Ctext x='120' y='180' font-size='16' fill='%23cfeee7'%3E1      0001%3C/text%3E%3Ctext x='120' y='210' font-size='16' fill='%23cfeee7'%3E2      0010%3C/text%3E%3Ctext x='120' y='240' font-size='16' fill='%23ffff00' font-weight='bold'%3E3      ????%3C/text%3E%3Cline x1='40' y1='255' x2='460' y2='255' stroke='%23ffb86b' stroke-width='2'/%3E%3C/svg%3E", q: "In a 4-bit binary counter, after 0000, 0001, 0010, what comes next? (Step 3)", check: a => String(a) === "0011", lootNote: "a diamond key from the counter chamber", clue: "Study binary increment patterns." },
       
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='340' viewBox='0 0 500 340'%3E%3Crect fill='%23071a20' width='500' height='340'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3E2%27s Complement Range Table%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='100' y='100' font-size='16' fill='%23cfeee7' font-weight='bold'%3E Bits    Min    Max%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='100' y='150' font-size='16' fill='%23cfeee7'%3E  4     -8     7%3C/text%3E%3Ctext x='100' y='180' font-size='16' fill='%23cfeee7'%3E  8    -128   127%3C/text%3E%3Ctext x='100' y='210' font-size='16' fill='%23ffff00' font-weight='bold'%3E 16     ???   ????%3C/text%3E%3Cline x1='40' y1='225' x2='460' y2='225' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='250' y='270' text-anchor='middle' font-size='15' fill='%23ffff00'%3EFor 16-bit 2%27s complement:%3C/text%3E%3Ctext x='250' y='295' text-anchor='middle' font-size='14' fill='%23ffff00'%3EEnter MIN value (negative number)%3C/text%3E%3Ctext x='250' y='320' text-anchor='middle' font-size='13' fill='%2300ffff'%3E(Pattern: -2^(n-1))%3C/text%3E%3C/svg%3E", q: "For 16-bit 2's complement, what is the MINIMUM value? (Pattern: -2^(n-1))", check: a => parseInt(a) === -32768, lootNote: "the ruby key from the final vault", clue: "Check the binary range chart." }
+      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='340' viewBox='0 0 500 340'%3E%3Crect fill='%23071a20' width='500' height='340'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3E2%27s Complement Range Table%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='100' y='100' font-size='16' fill='%23cfeee7' font-weight='bold'%3E Bits    Min    Max%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='100' y='150' font-size='16' fill='%23cfeee7'%3E  4     -8     7%3C/text%3E%3Ctext x='100' y='180' font-size='16' fill='%23cfeee7'%3E  8    -128   127%3C/text%3E%3Ctext x='100' y='210' font-size='16' fill='%23ffff00' font-weight='bold'%3E 16     ???   ????%3C/text%3E%3Cline x1='40' y1='225' x2='460' y2='225' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='250' y='270' text-anchor='middle' font-size='15' fill='%23ffff00'%3EFor 16-bit 2%27s complement:%3C/text%3E%3Ctext x='250' y='295' text-anchor='middle' font-size='14' fill='%23ffff00'%3EEnter MIN value (negative number)%3C/text%3E%3C/svg%3E", q: "For 16-bit 2's complement, what is the MINIMUM value?", check: a => parseInt(a) === -32768, lootNote: "the ruby key from the final vault", clue: "Check the binary range chart." }
     ];
 
     let keysCollected = 0;
-    let timeRemaining = 900; // 15 minutes
+    let timeRemaining = 600;
     let timerInterval = null;
     let gameActive = false;
+    let currentTextPuzzleDoor = null;
     let currentImagePuzzleDoor = null;
+    const doorAttempts = {};
+
+    function initializeDoorAttempts() {
+      for (let i = 1; i <= 15; i++) {
+        doorAttempts[i] = 3;
+      }
+    }
+
+    function updateDoorDisplay(doorNum) {
+      const attemptsEl = document.getElementById(`attempts${doorNum}`);
+      if (attemptsEl) {
+        attemptsEl.innerText = `3️⃣ ${doorAttempts[doorNum]}/3`;
+        if (doorAttempts[doorNum] === 1) attemptsEl.style.color = '#ff0000';
+        else if (doorAttempts[doorNum] === 2) attemptsEl.style.color = '#ffff00';
+        else attemptsEl.style.color = '#ffb86b';
+      }
+    }
 
     function startTimer() {
       gameActive = true;
@@ -572,11 +449,10 @@
       const minutes = Math.floor(timeRemaining / 60);
       const seconds = timeRemaining % 60;
       timerEl.innerText = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')}`;
-
       if (timeRemaining <= 60) {
         timerEl.classList.add("danger");
         timerEl.classList.remove("warning");
-      } else if (timeRemaining <= 300) {
+      } else if (timeRemaining <= 180) {
         timerEl.classList.add("warning");
         timerEl.classList.remove("danger");
       } else {
@@ -595,8 +471,9 @@
     function startGame() {
       document.getElementById("introScreen").style.display = "none";
       document.getElementById("gameContainer").style.display = "block";
-      document.getElementById("message").innerText = "🔍 The laboratory door opens. The first puzzle awaits. ⏰ Timer activated!";
+      document.getElementById("message").innerText = "🔍 The laboratory door opens. First puzzle awaits. ⏰ Timer activated!";
       document.getElementById("door1").classList.add("pulse");
+      initializeDoorAttempts();
       startTimer();
     }
 
@@ -609,68 +486,102 @@
       const doorEl = document.getElementById(`door${doorNum}`);
       if (doorEl.classList.contains("unlocked")) {
         document.getElementById("message").innerText = `✅ Door ${doorNum} is already unlocked.`;
-        showNpc(`You've already solved Door ${doorNum}. Next: ${getNextClue(doorNum)}`);
         return;
       }
 
-      const open = confirm("🚪 Attempt to unlock this door?");
-      if (!open) {
-        document.getElementById("message").innerText = "🔒 You step back...";
+      if (doorAttempts[doorNum] <= 0) {
+        alert("❌ Door is permanently locked!");
         return;
       }
 
       const p = puzzles[doorNum - 1];
-      if (!p) {
-        alert("⚠️ Empty chamber.");
-        return;
-      }
+      if (!p) return;
 
       if (p.type === "image") {
         currentImagePuzzleDoor = doorNum;
-        document.getElementById("modalTitle").innerText = `🖼️ Door ${doorNum} - Image Puzzle`;
+        document.getElementById("modalTitle").innerText = `🖼️ Door ${doorNum}`;
         document.getElementById("modalImage").src = p.image;
         document.getElementById("modalQuestion").innerText = p.q;
         document.getElementById("imagePuzzleInput").value = "";
+        document.getElementById("modalAttempts").innerText = `Attempts: ${doorAttempts[doorNum]}/3`;
         document.getElementById("imagePuzzleModal").classList.add("show");
-        return;
+        document.getElementById("imagePuzzleInput").focus();
+      } else {
+        currentTextPuzzleDoor = doorNum;
+        document.getElementById("textModalTitle").innerText = `❓ Door ${doorNum}`;
+        document.getElementById("textModalQuestion").innerText = p.q;
+        document.getElementById("textPuzzleInput").value = "";
+        document.getElementById("textModalAttempts").innerText = `Attempts: ${doorAttempts[doorNum]}/3`;
+        document.getElementById("textPuzzleModal").classList.add("show");
+        document.getElementById("textPuzzleInput").focus();
       }
+    }
 
-      let attempt = prompt(`${p.q}`);
-      if (attempt === null) {
-        document.getElementById("message").innerText = "🔒 Puzzle abandoned.";
-        return;
-      }
-
+    function submitTextPuzzle() {
+      if (currentTextPuzzleDoor === null) return;
+      const doorNum = currentTextPuzzleDoor;
+      const attempt = document.getElementById("textPuzzleInput").value.trim();
+      if (!attempt) { alert("❌ Please enter an answer!"); return; }
+      
+      const p = puzzles[doorNum - 1];
       let ok = false;
-      try { ok = p.check(attempt); } catch(e){ ok = false; }
+      try { ok = p.check(attempt); } catch(e) { ok = false; }
 
       if (ok) {
+        currentTextPuzzleDoor = null;
+        document.getElementById("textPuzzleModal").classList.remove("show");
         unlockDoor(doorNum);
         showNpc(`✨ Correct! You found ${p.lootNote}.\n\n📍 ${p.clue}`);
       } else {
-        const tries = doorEl.dataset.tries ? parseInt(doorEl.dataset.tries) + 1 : 1;
-        doorEl.dataset.tries = tries;
-        const nudges = ["❌ Incorrect. Analyze more carefully.", "❌ Think again.", "❌ Review the fundamentals."];
-        const nudge = nudges[Math.min(tries-1, nudges.length-1)];
-        alert(nudge);
-        document.getElementById("message").innerText = `🔒 Door ${doorNum} sealed. ${nudge}`;
+        doorAttempts[doorNum]--;
+        updateDoorDisplay(doorNum);
+        document.getElementById("textModalAttempts").innerText = `Attempts: ${doorAttempts[doorNum]}/3`;
+        if (doorAttempts[doorNum] <= 0) {
+          alert(`❌ Door ${doorNum} LOCKED!`);
+          currentTextPuzzleDoor = null;
+          document.getElementById("textPuzzleModal").classList.remove("show");
+        } else {
+          alert(`❌ Incorrect. ${doorAttempts[doorNum]} attempts left.`);
+          document.getElementById("textPuzzleInput").value = "";
+          document.getElementById("textPuzzleInput").focus();
+        }
       }
     }
 
     function submitImagePuzzle() {
       if (currentImagePuzzleDoor === null) return;
-      const attempt = document.getElementById("imagePuzzleInput").value;
-      const p = puzzles[currentImagePuzzleDoor - 1];
+      const doorNum = currentImagePuzzleDoor;
+      const attempt = document.getElementById("imagePuzzleInput").value.trim();
+      if (!attempt) { alert("❌ Please enter an answer!"); return; }
+      
+      const p = puzzles[doorNum - 1];
       let ok = false;
-      try { ok = p.check(attempt); } catch(e){ ok = false; }
+      try { ok = p.check(attempt); } catch(e) { ok = false; }
 
       if (ok) {
-        closeImageModal();
-        unlockDoor(currentImagePuzzleDoor);
+        currentImagePuzzleDoor = null;
+        document.getElementById("imagePuzzleModal").classList.remove("show");
+        unlockDoor(doorNum);
         showNpc(`✨ Correct! You found ${p.lootNote}.\n\n📍 ${p.clue}`);
       } else {
-        alert("❌ Incorrect. Analyze the image more carefully.");
+        doorAttempts[doorNum]--;
+        updateDoorDisplay(doorNum);
+        document.getElementById("modalAttempts").innerText = `Attempts: ${doorAttempts[doorNum]}/3`;
+        if (doorAttempts[doorNum] <= 0) {
+          alert(`❌ Door ${doorNum} LOCKED!`);
+          currentImagePuzzleDoor = null;
+          document.getElementById("imagePuzzleModal").classList.remove("show");
+        } else {
+          alert(`❌ Incorrect. ${doorAttempts[doorNum]} attempts left.`);
+          document.getElementById("imagePuzzleInput").value = "";
+          document.getElementById("imagePuzzleInput").focus();
+        }
       }
+    }
+
+    function closeTextModal() {
+      document.getElementById("textPuzzleModal").classList.remove("show");
+      currentTextPuzzleDoor = null;
     }
 
     function closeImageModal() {
@@ -682,25 +593,17 @@
       const doorEl = document.getElementById(`door${doorNum}`);
       doorEl.classList.add("unlocked");
       doorEl.classList.remove("pulse");
-
       const next = document.getElementById(`door${doorNum + 1}`);
-      if (next) {
-        next.classList.remove("hidden");
-        next.classList.add("pulse");
-      }
-
+      if (next) { next.classList.remove("hidden"); next.classList.add("pulse"); }
       keysCollected++;
       document.getElementById("keyCount").innerText = `🔑 Keys Collected: ${keysCollected}/15`;
       addKeyIcon(keysCollected);
-
-      document.getElementById("message").innerText = `✅ DOOR ${doorNum} UNLOCKED! 🎯 ${keysCollected}/15 keys collected.`;
-
+      document.getElementById("message").innerText = `✅ DOOR ${doorNum} UNLOCKED! 🎯 ${keysCollected}/15 keys`;
       if (keysCollected === 15) {
         gameActive = false;
         clearInterval(timerInterval);
         document.getElementById("exitDoor").style.display = "block";
-        document.getElementById("exitDoor").classList.add("pulse");
-        showNpc("🎉 All keys collected! Master exit accessible. Escape now!");
+        showNpc("🎉 All keys collected! Escape now!");
       }
     }
 
@@ -710,7 +613,6 @@
       span.className = "key-icon";
       const emojis = ["🔑","🗝️","🔐","🧩","💠","⚙️","🔸","🔹","⭐","🏆","💎","🔱","👑","🌟","⚡"];
       span.innerText = emojis[(idx-1) % emojis.length];
-      span.title = `Key ${idx}`;
       keyShelf.appendChild(span);
     }
 
@@ -721,30 +623,26 @@
 
     function hideNpc() { document.getElementById("npc").style.display = "none"; }
 
-    function getNextClue(doorNum) {
-      const next = puzzles[doorNum] || null;
-      return next ? next.clue : "The lab awaits.";
-    }
-
     function escapeRoom() {
       if (!gameActive) return;
       gameActive = false;
       clearInterval(timerInterval);
-      const ok = confirm("🚪 Activate master override and escape?");
-      if (!ok) {
-        gameActive = true;
-        startTimer();
-        return;
-      }
       document.getElementById("gameContainer").style.display = "none";
       document.getElementById("victoryScreen").style.display = "block";
-      const mins = Math.floor((900 - timeRemaining) / 60);
-      const secs = (900 - timeRemaining) % 60;
+      const mins = Math.floor((600 - timeRemaining) / 60);
+      const secs = (600 - timeRemaining) % 60;
       document.getElementById("victoryTime").innerText = `🏃 Escaped in ${mins}:${secs.toString().padStart(2, '0')}! 🏁`;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       for (let i = 2; i <= 15; i++) document.getElementById(`door${i}`).classList.add('hidden');
+    });
+
+    document.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        if (currentTextPuzzleDoor !== null) submitTextPuzzle();
+        else if (currentImagePuzzleDoor !== null) submitImagePuzzle();
+      }
     });
   </script>
 </body>
