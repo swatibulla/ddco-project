@@ -50,6 +50,11 @@
     color:var(--hint);
     font-weight:600;
   }
+  #doorCounter{
+    color: var(--hint);
+    font-weight:600;
+    margin-bottom:12px;
+  }
   #questionBox{
     width:820px;
     max-width:94%;
@@ -62,6 +67,7 @@
     color:var(--text);
     font-size:18px;
     margin-bottom:12px;
+    display:none;
   }
   #questionText{ font-size:20px; margin-bottom:12px; }
   #answerRow{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
@@ -111,14 +117,15 @@
 <div id="instructions">
   <strong>How to play</strong><br>
   • There are <strong>15</strong> questions. Answer them one-by-one in order. <br>
-  • You have <strong>3 attempts</strong> per question. After the 2nd wrong try you get a hint. After the 3rd wrong try the correct answer is shown and the game automatically moves to the next question. (Option A behavior.)<br>
-  • Timer: <strong>10 minutes</strong>. When time runs out the page will reload. <br>
-  • Answers are checked case-insensitively and punctuation/extra spaces are ignored. Puzzle #9 accepts several common forms (e.g. <code>exit0</code>, <code>exit(0)</code>, etc.).<br>
+  • You have <strong>3 attempts</strong> per question. After the 2nd wrong try you get a hint. After the 3rd wrong try the correct answer is shown and the game automatically moves to the next question.<br>
+  • Timer: <strong>10 minutes</strong>. <br>
+  • Answers are checked case-insensitively and punctuation/extra spaces are ignored.<br>
 </div>
 
 <div id="timer">Time Left: 10:00</div>
+<div id="doorCounter">Doors Unlocked: 0 / 15</div>
 
-<div id="questionBox" style="display:none">
+<div id="questionBox">
   <div id="questionText"></div>
   <div id="answerRow">
     <input id="answer" autocomplete="off" placeholder="Type your answer here" />
@@ -133,11 +140,6 @@
 <footer>Made for your escape room — responsive, stable, zero skipping.</footer>
 
 <script>
-/* -------------------------
-   Puzzle list (15 puzzles)
-   -------------------------
-   Each puzzle: { q: question text, a: array of accepted answers (normalized), hint: hint text }
-*/
 const puzzles = [
   { q: "1) NOT(OR(0,1,0)) = ?", a: ["0"], hint: "OR yields 1 if any input is 1." },
   { q: "2) Decimal value of 1011?", a: ["11"], hint: "Binary to decimal: 8+0+2+1." },
@@ -147,61 +149,22 @@ const puzzles = [
   { q: "6) I speak only when both are silent. Who am I?", a: ["nor"], hint: "Opposite of OR." },
   { q: "7) Where do C programs begin?", a: ["main"], hint: "The entry function." },
   { q: "8) I call myself until the work is done. What is this?", a: ["recursion"], hint: "A function calling itself." },
-
-  // Puzzle 9 accepts multiple common forms
   { q: "9) I end the program instantly. Which command? (C)", 
     a: ["exit0","exit(0)","exit 0","exit(0);","exit 0;"], 
     hint: "Common C exit forms: exit(0) or exit 0." },
-
   { q: "10) Conversion from one data type to another is called?", a: ["typecasting", "casting"], hint: "E.g., (int) or (float)." },
-
-  // 11–15 updated as user specified earlier
   { q: "11) Light as a feather, yet no man can hold me for long. What am I?", a: ["breath"], hint: "You breathe it." },
   { q: "12) The more of me there is, the less you see. What am I?", a: ["darkness"], hint: "Opposite of light." },
-  { q: "13) Find the next number: 2, 6, 12, 20, ? (Pattern n(n+1) — 1·2,2·3,3·4,...)", a: ["30"], hint: "This is n(n+1): next is 5·6 = 30." },
+  { q: "13) Find the next number: 2, 6, 12, 20, ?", a: ["30"], hint: "This is n(n+1): next is 5·6 = 30." },
   { q: "14) Which language popularized the phrase “write once, run anywhere”?", a: ["java"], hint: "Runs on the JVM." },
   { q: "15) Magic square 3×3 using 1–9, all rows/cols/diagonals sum 15. Center number?", a: ["5"], hint: "Center of 3×3 magic square is 5." }
 ];
 
-/* -------------------------
-   State
-   ------------------------- */
-let current = 0;          // index into puzzles
-let attempts = 0;         // attempts for current question
-let timerSeconds = 10 * 60; // 10 minutes
-let timerInterval = null;
-let advancing = false;    // lock while auto-advancing to prevent double clicks
+let current = 0;
+let attempts = 0;
+let correctCount = 0;
+let timerSeconds = 600;
 
-/* -------------------------
-   Utilities: normalization
-   - lowercase
-   - strip punctuation except alphanumerics
-   - remove multiple spaces
-   - also special-case to remove trailing semicolon
-   ------------------------- */
-function normalizeAnswer(s){
-  if(!s) return "";
-  s = String(s).trim().toLowerCase();
-  // remove trailing semicolons/spaces
-  s = s.replace(/;$/,'').trim();
-  // collapse spaces
-  s = s.replace(/\s+/g,' ');
-  // remove punctuation except parentheses for forms like exit(0)
-  // but also produce a variant without punctuation for matching e.g. "exit 0" -> "exit0"
-  return s;
-}
-
-function canonicalForms(s){
-  // returns a set of normalized forms for a user input to compare against accepted answers
-  const norm = normalizeAnswer(s);
-  const noSpaces = norm.replace(/\s+/g,'');
-  const stripPunct = norm.replace(/[^a-z0-9\(\)]/g,''); // keep parentheses if any
-  return new Set([norm, noSpaces, stripPunct]);
-}
-
-/* -------------------------
-   Rendering
-   ------------------------- */
 const qBox = document.getElementById("questionBox");
 const qText = document.getElementById("questionText");
 const answerInput = document.getElementById("answer");
@@ -210,35 +173,48 @@ const feedbackEl = document.getElementById("feedback");
 const progressEl = document.getElementById("progress");
 const timerEl = document.getElementById("timer");
 const startBtn = document.getElementById("startBtn");
+const doorCounter = document.getElementById("doorCounter");
+let timerInterval = null;
+
+function normalizeAnswer(s){
+  if(!s) return "";
+  s = String(s).trim().toLowerCase();
+  s = s.replace(/;$/,'').trim();
+  s = s.replace(/\s+/g,' ');
+  return s;
+}
+
+function canonicalForms(s){
+  const norm = normalizeAnswer(s);
+  const noSpaces = norm.replace(/\s+/g,'');
+  const stripPunct = norm.replace(/[^a-z0-9\(\)]/g,'');
+  return new Set([norm, noSpaces, stripPunct]);
+}
+
+function updateDoorCounter(){
+  doorCounter.textContent = `Doors Unlocked: ${correctCount} / 15`;
+}
 
 function renderCurrent(){
-  advancing = false;
   attempts = 0;
   feedbackEl.textContent = "";
   answerInput.value = "";
   answerInput.disabled = false;
   submitBtn.disabled = false;
+  updateDoorCounter();
 
   if(current >= puzzles.length){
-    qBox.style.display = "block";
-    qText.innerHTML = "<strong>🎉 All done — congratulations!</strong>";
-    document.getElementById("answerRow").style.display = "none";
-    feedbackEl.innerHTML = "";
-    progressEl.innerText = `Completed ${puzzles.length}/${puzzles.length}`;
+    endGame();
     return;
   }
 
   const p = puzzles[current];
   qBox.style.display = "block";
   qText.innerText = p.q;
-  progressEl.innerText = `Question ${current+1} of ${puzzles.length}`;
-  // focus input
+  progressEl.innerText = `Question ${current+1} of 15`;
   setTimeout(()=> answerInput.focus(), 50);
 }
 
-/* -------------------------
-   Timer
-   ------------------------- */
 function startTimer(){
   timerEl.textContent = formatTime(timerSeconds);
   timerInterval = setInterval(()=>{
@@ -246,96 +222,85 @@ function startTimer(){
     timerEl.textContent = formatTime(timerSeconds);
     if(timerSeconds <= 0){
       clearInterval(timerInterval);
-      alert("Time's up! The page will reload.");
-      location.reload();
+      endGame();
     }
   },1000);
 }
+
 function formatTime(sec){
   const m = String(Math.floor(sec/60)).padStart(2,'0');
   const s = String(sec%60).padStart(2,'0');
   return `Time Left: ${m}:${s}`;
 }
 
-/* -------------------------
-   Answer checking logic (Option A)
-   - on correct -> advance to next
-   - on 1st wrong -> message
-   - on 2nd wrong -> show hint
-   - on 3rd wrong -> reveal correct, auto advance after delay
-   Ensure no skipping: advancing flag prevents double events
-   ------------------------- */
 function checkAnswer(){
-  if(advancing) return;
-  const raw = answerInput.value;
-  const userForms = canonicalForms(raw);
+  if(current >= puzzles.length) return;
+  const raw = answerInput.value.trim();
+  if(!raw) return;
 
+  const userForms = canonicalForms(raw);
   const p = puzzles[current];
-  // build set of normalized accepted answers
+
   const accepted = new Set();
-  for(const a of p.a){
+  p.a.forEach(a=>{
     const af = normalizeAnswer(a);
     accepted.add(af);
-    accepted.add(af.replace(/\s+/g,'')); // no spaces
-    accepted.add(af.replace(/[^a-z0-9\(\)]/g,'')); // strip punctuation except parens
-  }
+    accepted.add(af.replace(/\s+/g,''));
+    accepted.add(af.replace(/[^a-z0-9\(\)]/g,''));
+  });
 
-  // check intersection
   let matched = false;
-  for(const form of userForms){
-    if(accepted.has(form)) { matched = true; break; }
-  }
+  for(const f of userForms){ if(accepted.has(f)){ matched = true; break; } }
 
   attempts++;
 
   if(matched){
-    // correct answer
+    correctCount++;
+    updateDoorCounter();
     feedbackEl.innerHTML = `<span class="correct-answer">✅ Correct.</span>`;
-    // disable input briefly and advance after small delay so user sees feedback
-    advancing = true;
     answerInput.disabled = true;
     submitBtn.disabled = true;
-    setTimeout(()=> {
-      current++;
-      renderCurrent();
-    }, 600);
+    setTimeout(()=> { current++; renderCurrent(); }, 600);
     return;
   }
 
-  // incorrect branch
   if(attempts === 1){
-    feedbackEl.innerHTML = `❌ Incorrect — try again.`;
+    feedbackEl.innerHTML = "❌ Incorrect — try again.";
   } else if(attempts === 2){
     feedbackEl.innerHTML = `❌ Incorrect — <strong>Hint:</strong> ${p.hint}`;
   } else {
-    // 3rd wrong attempt -> reveal correct answer(s), then auto-advance
-    // show first accepted answer in readable form
-    const shown = Array.isArray(p.a) ? p.a[0] : p.a;
-    feedbackEl.innerHTML = `❌ Incorrect — Correct: <span class="correct-answer">${shown}</span><br>Moving to next...`;
-    advancing = true;
+    feedbackEl.innerHTML = `❌ Incorrect — Correct: <span class="correct-answer">${p.a[0]}</span>`;
     answerInput.disabled = true;
     submitBtn.disabled = true;
-    setTimeout(()=>{
-      current++;
-      renderCurrent();
-    }, 1200); // 1.2s as requested
+    setTimeout(()=> { current++; renderCurrent(); }, 1200);
   }
 }
 
-/* -------------------------
-   Start handler & wiring
-   ------------------------- */
+function endGame(){
+  clearInterval(timerInterval);
+  answerInput.disabled = true;
+  submitBtn.disabled = true;
+  document.getElementById("answerRow").style.display = "none";
+
+  const passed = correctCount >= 8 ? "PASS" : "FAIL";
+  const color = passed === "PASS" ? "#00ffb0" : "#ff6e6e";
+
+  qText.innerHTML = `<h2 style="color:${color};">${passed}</h2>
+                     <div style="font-size:20px;">Score: <strong>${correctCount} / 15</strong></div>
+                     <div style="margin-top:6px;color:#9ac7df;">Minimum required: 8</div>`;
+
+  progressEl.textContent = "";
+  feedbackEl.textContent = "";
+}
+
 startBtn.addEventListener("click", ()=>{
   startBtn.style.display = "none";
   renderCurrent();
   startTimer();
 });
-submitBtn.addEventListener("click", checkAnswer);
-answerInput.addEventListener("keydown", (e)=>{
-  if(e.key === "Enter") checkAnswer();
-});
 
-/* Accessibility: prevent accidental double-clicks by disabling on submit; handled in checkAnswer */
+submitBtn.addEventListener("click", checkAnswer);
+answerInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") checkAnswer(); });
 </script>
 </body>
 </html>
