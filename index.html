@@ -1,246 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DDCO Escape Room</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 50%, #0d0f2d 100%); background-attachment: fixed; color: #cfeee7; text-align: center; padding: 20px; position: relative; overflow-x: hidden; }
-    body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(circle at 20% 50%, rgba(0, 200, 255, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 123, 255, 0.08) 0%, transparent 50%); background-size: 100% 100%; background-attachment: fixed; z-index: -2; pointer-events: none; }
-    body::after { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(0deg, transparent 24%, rgba(0, 200, 255, 0.03) 25%, rgba(0, 200, 255, 0.03) 26%, transparent 27%, transparent 74%, rgba(0, 200, 255, 0.03) 75%, rgba(0, 200, 255, 0.03) 76%, transparent 77%, transparent); background-size: 50px 50px; z-index: -1; pointer-events: none; }
-    h1 { margin-top: 10px; font-size: 48px; color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 200, 255, 0.3); letter-spacing: 2px; }
-    #timer { position: fixed; top: 20px; right: 20px; font-size: 28px; font-weight: 700; color: #00ff00; background: rgba(0, 0, 0, 0.95); padding: 12px 20px; border-radius: 10px; border: 3px solid #00ff00; box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); z-index: 999; font-family: 'Courier New', monospace; }
-    #timer.warning { color: #ffff00; border-color: #ffff00; }
-    #timer.danger { color: #ff0000; border-color: #ff0000; animation: blink 0.5s infinite; }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-    .intro-screen { margin: 30px auto; padding: 40px; border: 3px solid #00e5ff; background: linear-gradient(135deg, rgba(0, 229, 255, 0.08), rgba(255, 123, 255, 0.04)); border-radius: 15px; font-size: 18px; line-height: 1.8; width: 92%; max-width: 950px; box-shadow: 0 0 30px rgba(0, 229, 255, 0.3); }
-    .instructions-box { background: rgba(255, 184, 107, 0.1); border-left: 4px solid #ffb86b; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left; max-width: 900px; margin-left: auto; margin-right: auto; }
-    .instructions-box h3 { color: #ffb86b; margin-bottom: 12px; }
-    .instructions-box ol { color: #cfeee7; line-height: 2; padding-left: 25px; }
-    .start-button { margin-top: 25px; padding: 15px 40px; font-size: 20px; background: linear-gradient(135deg, #00e5ff, #00c6ff); color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); transition: all 0.3s ease; }
-    .start-button:hover { transform: scale(1.05); }
-    .game-container { display: none; margin-top: 20px; }
-    #game { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: 15px; }
-    .door { width: 160px; height: 130px; padding: 12px; border: 3px solid #ffb86b; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; background: linear-gradient(135deg, #1a2332, #0a1420); border-radius: 12px; font-size: 18px; color: #ffe8c9; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); transition: all 0.3s ease; position: relative; }
-    .door::before { content: '🔒'; position: absolute; top: 5px; right: 8px; font-size: 16px; }
-    .door:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 15px 35px rgba(255, 184, 107, 0.3); }
-    .door.hidden { display: none; }
-    .door.unlocked { background: linear-gradient(135deg, #0af3a3, #02785f); color: #000; border-color: #00ffb3; cursor: default; }
-    .door.unlocked::before { content: '🔓'; }
-    .door small { font-size: 12px; opacity: 0.8; }
-    .door-attempts { font-size: 11px; color: #ffb86b; margin-top: 6px; font-weight: bold; }
-    #message { margin-top: 20px; font-size: 18px; min-height: 50px; padding: 15px; background: rgba(0, 229, 255, 0.1); border-left: 4px solid #00e5ff; border-radius: 5px; color: #ffff00; font-weight: 500; }
-    #keys { margin-top: 20px; font-size: 18px; color: #ffd36b; padding: 15px; background: rgba(255, 211, 107, 0.1); border-radius: 10px; }
-    .key-icon { display: inline-block; margin: 0 8px; font-size: 24px; }
-    .npc { position: fixed; left: 20px; bottom: 20px; background: linear-gradient(135deg, rgba(3, 18, 26, 0.95), rgba(10, 30, 40, 0.9)); color: #dff9f3; border: 2px solid #00c6ff; padding: 18px; border-radius: 12px; max-width: 340px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7); display: none; z-index: 200; }
-    .npc::before { content: '🤖'; display: block; font-size: 28px; margin-bottom: 8px; }
-    .npc h4 { margin: 0 0 8px 0; font-size: 16px; color: #bff7ff; }
-    .npc p { margin: 0; font-size: 14px; color: #eafefb; line-height: 1.5; white-space: pre-wrap; }
-    .npc .close { margin-top: 10px; text-align: right; font-size: 13px; color: #9be8ff; cursor: pointer; }
-    .pulse { animation: pulse 1.2s infinite; }
-    @keyframes pulse { 0%, 100% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 184, 107, 0.2); } 50% { box-shadow: 0 8px 25px rgba(255, 184, 107, 0.3), 0 0 30px rgba(255, 184, 107, 0.4); } }
-    .exit-door { margin-top: 25px; padding: 25px; border: 3px dashed #ff7bff; background: linear-gradient(135deg, rgba(255, 123, 255, 0.08), rgba(255, 0, 200, 0.04)); border-radius: 12px; font-size: 22px; display: none; cursor: pointer; box-shadow: 0 0 30px rgba(255, 123, 255, 0.3); transition: all 0.3s ease; font-weight: 700; }
-    .exit-door:hover { transform: scale(1.05); }
-    .victory-screen { display: none; padding: 40px; margin-top: 20px; border: 3px solid #ffd36b; border-radius: 15px; background: linear-gradient(135deg, rgba(255, 211, 107, 0.1), rgba(255, 123, 255, 0.1)); color: #fff; box-shadow: 0 0 40px rgba(255, 211, 107, 0.4); }
-    .victory-screen h3 { color: #ffff00; font-size: 36px; margin-bottom: 15px; }
-    .timeout-screen { display: none; padding: 40px; margin-top: 20px; border: 3px solid #ff0000; border-radius: 15px; background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(255, 0, 0, 0.05)); color: #ff0000; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 0, 0.4); }
-    .room-title { margin: 20px 0 10px 0; font-size: 24px; color: #00e5ff; text-transform: uppercase; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 300; justify-content: center; align-items: center; }
-    .modal.show { display: flex; }
-    .modal-content { background: linear-gradient(135deg, rgba(10, 14, 39, 0.98), rgba(26, 26, 62, 0.98)); padding: 30px; border-radius: 15px; border: 3px solid #00e5ff; max-width: 600px; width: 90%; box-shadow: 0 0 40px rgba(0, 229, 255, 0.4); }
-    .modal-content h3 { color: #00ffff; margin-bottom: 20px; }
-    .modal-question { color: #ffff00; font-size: 18px; margin: 20px 0; font-weight: 600; }
-    .modal-attempts { font-size: 14px; color: #ff7bff; margin: 10px 0; font-weight: bold; }
-    .modal-input { padding: 12px; width: 90%; border-radius: 6px; border: 2px solid #00e5ff; background: rgba(0, 229, 255, 0.1); color: #cfeee7; font-size: 16px; margin: 15px 0; text-align: center; }
-    .modal-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
-    .modal-btn { padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 16px; transition: all 0.3s ease; }
-    .modal-submit { background: linear-gradient(135deg, #00ff88, #00cc66); color: #000; }
-    .modal-submit:hover { transform: scale(1.05); }
-    .modal-close { background: linear-gradient(135deg, #ff3333, #cc0000); color: #fff; }
-    .modal-close:hover { transform: scale(1.05); }
-    .modal-image { max-width: 100%; border-radius: 10px; margin: 20px 0; border: 2px solid #ffb86b; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DDCO Escape Room — Stage 1 & 2</title>
+<style>
+body { font-family: Arial, sans-serif; background: #0b1220; color: #e6f7ff; text-align: center; padding: 20px; }
+.container { max-width: 820px; margin: 12px auto; padding: 20px; background: linear-gradient(180deg,#071020,#0f1b2b); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+h1 { color: #7be3ff; }
+#timer { font-size: 18px; color: #ffda79; margin-bottom: 12px; }
+#puzzle-area { background: rgba(255,255,255,0.02); padding: 18px; border-radius: 8px; }
+#puzzle-image { margin: 12px auto; max-width: 100%; color: #cfeee7; font-style: italic; }
+input#answer { padding: 10px; width: 70%; border-radius: 6px; border: 1px solid #2b6b88; background: rgba(255,255,255,0.02); color: #e6f7ff; }
+button { padding: 10px 16px; margin-left: 8px; border-radius: 6px; border: none; background: linear-gradient(90deg,#00c9ff,#00f0a0); color: #002; font-weight: 700; cursor: pointer; }
+#hint { color: #ffcf6a; margin-top: 10px; }
+#feedback { margin-top: 10px; color: #ff9aa2; }
+</style>
 </head>
 <body>
-  <h1>🔐 DDCO ESCAPE ROOM 🔐</h1>
-  <div id="timer">⏱️ 10:00</div>
-
-  <div class="intro-screen" id="introScreen">
-    <p><strong style="color: #00ffff; font-size: 24px;">⚡ Welcome to the Digital Logic Escape Room ⚡</strong></p>
-    <p>You are trapped inside a high-tech laboratory. Unlock all 20 doors by solving DDCO puzzles.</p>
-    <div class="instructions-box">
-      <h3>📋 How to Play:</h3>
-      <ol>
-        <li><strong>Click a door</strong> to attempt solving the puzzle</li>
-        <li><strong>Text & Image Puzzles:</strong> Answer the question in the modal</li>
-        <li><strong>Correct Answer:</strong> Door unlocks and next door becomes available</li>
-        <li><strong>⚠️ Only 3 Attempts per Door!</strong></li>
-        <li><strong>Collect all 20 keys</strong> to unlock the final exit door</li>
-        <li><strong>⏰ Beat the timer!</strong> You have 10 minutes to escape</li>
-      </ol>
-    </div>
-    <p><strong>20 Doors • 20 Puzzles • 10 Minutes • 3 Attempts per Door ⏱️</strong></p>
-    <button class="start-button" onclick="startGame()">🚪 ENTER THE LAB</button>
+<div class="container">
+  <h1>🔐 DDCO Escape Room — Stage 1 & 2</h1>
+  <div id="timer">Time Left: 15:00</div>
+  <div id="puzzle-area">
+    <h2 id="puzzle-title">Door 1</h2>
+    <p id="puzzle-text"></p>
+    <div id="puzzle-image" style="display:none;"></div>
+    <div id="imageDesc" style="display:none; color:#d1f7ff; background: rgba(255,255,255,0.02); padding:10px; border-radius:6px; margin:8px 0;">Image: <span id="imgText"></span></div>
+    <div id="hint" style="display:none"></div>
+    <input id="answer" placeholder="Type your answer here" />
+    <button onclick="checkAnswer()">Submit</button>
+    <div id="feedback"></div>
   </div>
+</div>
 
-  <div class="game-container" id="gameContainer">
-    <div class="room-title">📡 CIRCUIT LABORATORY 📡</div>
-    <div id="game">
-      <div id="door1" class="door" onclick="onDoorClick(1)"><div>🚪 DOOR 1</div><small>Binary Corner</small><div class="door-attempts" id="attempts1">3️⃣ 3/3</div></div>
-      <div id="door2" class="door hidden" onclick="onDoorClick(2)"><div>🚪 DOOR 2</div><small>Logic Shelf</small><div class="door-attempts" id="attempts2">3️⃣ 3/3</div></div>
-      <div id="door3" class="door hidden" onclick="onDoorClick(3)"><div>🚪 DOOR 3</div><small>Flip-Flop Wall</small><div class="door-attempts" id="attempts3">3️⃣ 3/3</div></div>
-      <div id="door4" class="door hidden" onclick="onDoorClick(4)"><div>🚪 DOOR 4</div><small>Instruction Nook</small><div class="door-attempts" id="attempts4">3️⃣ 3/3</div></div>
-      <div id="door5" class="door hidden" onclick="onDoorClick(5)"><div>🚪 DOOR 5</div><small>ALU Bench</small><div class="door-attempts" id="attempts5">3️⃣ 3/3</div></div>
-      <div id="door6" class="door hidden" onclick="onDoorClick(6)"><div>🚪 DOOR 6</div><small>Timing Rack</small><div class="door-attempts" id="attempts6">3️⃣ 3/3</div></div>
-      <div id="door7" class="door hidden" onclick="onDoorClick(7)"><div>🚪 DOOR 7</div><small>Shift Bay</small><div class="door-attempts" id="attempts7">3️⃣ 3/3</div></div>
-      <div id="door8" class="door hidden" onclick="onDoorClick(8)"><div>🚪 DOOR 8</div><small>Decoder Slot</small><div class="door-attempts" id="attempts8">3️⃣ 3/3</div></div>
-      <div id="door9" class="door hidden" onclick="onDoorClick(9)"><div>🚪 DOOR 9</div><small>MUX Cabinet</small><div class="door-attempts" id="attempts9">3️⃣ 3/3</div></div>
-      <div id="door10" class="door hidden" onclick="onDoorClick(10)"><div>🚪 DOOR 10</div><small>Final Vault</small><div class="door-attempts" id="attempts10">3️⃣ 3/3</div></div>
-      <div id="door11" class="door hidden" onclick="onDoorClick(11)"><div>🚪 DOOR 11</div><small>Truth Table</small><div class="door-attempts" id="attempts11">3️⃣ 3/3</div></div>
-      <div id="door12" class="door hidden" onclick="onDoorClick(12)"><div>🚪 DOOR 12</div><small>Circuit Board</small><div class="door-attempts" id="attempts12">3️⃣ 3/3</div></div>
-      <div id="door13" class="door hidden" onclick="onDoorClick(13)"><div>🚪 DOOR 13</div><small>Memory Map</small><div class="door-attempts" id="attempts13">3️⃣ 3/3</div></div>
-      <div id="door14" class="door hidden" onclick="onDoorClick(14)"><div>🚪 DOOR 14</div><small>Pipeline Stage</small><div class="door-attempts" id="attempts14">3️⃣ 3/3</div></div>
-      <div id="door15" class="door hidden" onclick="onDoorClick(15)"><div>🚪 DOOR 15</div><small>Master Vault</small><div class="door-attempts" id="attempts15">3️⃣ 3/3</div></div>
-      <div id="door16" class="door hidden" onclick="onDoorClick(16)"><div>🚪 DOOR 16</div><small>Parity Check</small><div class="door-attempts" id="attempts16">3️⃣ 3/3</div></div>
-      <div id="door17" class="door hidden" onclick="onDoorClick(17)"><div>🚪 DOOR 17</div><small>Gray Code</small><div class="door-attempts" id="attempts17">3️⃣ 3/3</div></div>
-      <div id="door18" class="door hidden" onclick="onDoorClick(18)"><div>🚪 DOOR 18</div><small>Booth's Algo</small><div class="door-attempts" id="attempts18">3️⃣ 3/3</div></div>
-      <div id="door19" class="door hidden" onclick="onDoorClick(19)"><div>🚪 DOOR 19</div><small>K-Map Logic</small><div class="door-attempts" id="attempts19">3️⃣ 3/3</div></div>
-      <div id="door20" class="door hidden" onclick="onDoorClick(20)"><div>🚪 DOOR 20</div><small>Master Access</small><div class="door-attempts" id="attempts20">3️⃣ 3/3</div></div>
-    </div>
-    <div id="message">🔍 Locate the first door and open it to begin your escape...</div>
-    <div id="keys"><span id="keyCount">🔑 Keys Collected: 0/20</span><div id="keyShelf" style="margin-top:12px;"></div></div>
-    <div class="exit-door" id="exitDoor" onclick="escapeRoom()">🔓 FINAL EXIT — EMERGENCY UNLOCK 🔓</div>
-    <div class="victory-screen" id="victoryScreen"><h3>🎉 ESCAPE SUCCESSFUL! 🎉</h3><p>All 20 digital keys have been collected. You are FREE.</p><p id="victoryTime" style="color: #00ffff; font-weight: 700; margin-top: 15px;"></p></div>
-    <div class="timeout-screen" id="timeoutScreen"><h3>⏰ SYSTEM LOCKDOWN ⏰</h3><p>Your time has expired. All doors have locked permanently.</p><p>You managed to escape <span id="finalKeys">0</span>/20 rooms.</p></div>
-  </div>
+<script>
+// Puzzles 1..20 (Stage1: 1-10 simple riddles; Stage2: 11-20 image based descriptions)
+const puzzles = [
+  { q: "NOT(OR(0,1,0)) = ?", a: "0", hint: "OR gives 1 if any input is 1" },
+  { q: "Decimal value of 1011?", a: "11", hint: "8 + 0 + 2 + 1" },
+  { q: "A full adder has how many inputs?", a: "3", hint: "A, B and carry-in" },
+  { q: "I open only when every switch is ON. What am I?", a: "and", hint: "All inputs must be 1" },
+  { q: "If two inputs differ I output 1. Who am I?", a: "xor", hint: "Exclusive OR" },
+  { q: "I speak only when both are silent. Who am I?", a: "nor", hint: "Opposite of OR" },
+  { q: "Where do C programs begin?", a: "main", hint: "It's the entry function" },
+  { q: "I call myself until the work is done. What is this?", a: "recursion", hint: "Function that calls itself" },
+  { q: "I end the program instantly. Which command?", a: "exit(0)", hint: "Common in C" },
+  { q: "I change one data type into another. What am I?", a: "type casting", hint: "(int) or (float) etc." },
 
-  <div class="modal" id="puzzleModal">
-    <div class="modal-content">
-      <h3 id="modalTitle">❓ Puzzle</h3>
-      <img id="modalImage" src="" alt="Puzzle" class="modal-image" style="display:none;" />
-      <p class="modal-question" id="modalQuestion">What's your answer?</p>
-      <p class="modal-attempts" id="modalAttempts">Attempts Remaining: 3/3</p>
-      <input type="text" id="puzzleInput" class="modal-input" placeholder="Enter your answer..." />
-      <div class="modal-buttons">
-        <button class="modal-btn modal-submit" onclick="submitAnswer()">✓ Submit</button>
-        <button class="modal-btn modal-close" onclick="closeModal()">✕ Close</button>
-      </div>
-    </div>
-  </div>
+  // Stage-2 begins here (image-based — descriptions are used instead of actual images)
 
-  <div class="npc" id="npc">
-    <h4>System Guide</h4>
-    <p id="npcText">I will provide guidance after you unlock a door.</p>
-    <div class="close" onclick="hideNpc()">✖ Close</div>
-  </div>
+  // 11 — Shape Rotation (updated earlier)
+  { q: "(Image) A square rotated 45° (diamond) has a small dot in its top corner. The square is rotated 90° clockwise. Where is the dot now?", a: "right corner", hint: "Track the corner as the shape rotates clockwise.", imgDesc: "A square shown as a diamond; a small dot sits at the top corner. Next frame shows the square rotated 90° clockwise." },
 
-  <script>
-    const puzzles = [
-      { q: "Binary Puzzle: What is the decimal value of 1011?", check: a => parseInt(a) === 11, loot: "a brass key behind a binary poster", clue: "Check the poster near the resistor shelf." },
-      { q: "Logic Gate: NOT(OR(0,1,0)) = ?", check: a => parseInt(a) === 0, loot: "a copper key under a loose tile", clue: "Look for the loose tile near the bench." },
-      { q: "Flip-Flop: If D=1 and you give a rising clock to a D flip-flop, Q becomes ?", check: a => parseInt(a) === 1, loot: "an iron key in a flip-flop diagram", clue: "Inspect the timing posters on the wall." },
-      { q: "Instruction: MOV R1, #5 → What value is in R1?", check: a => parseInt(a) === 5, loot: "a silver key inside the manual", clue: "Peek inside the instruction manual on the shelf." },
-      { q: "Combinational: XOR(1,0,1) → result?", check: a => parseInt(a) === 0, loot: "a bronze key near the ALU", clue: "Search the ALU bench for a glint." },
-      { q: "Sequential: JK with J=1,K=1 on clock → state?", check: a => ["toggle","toggles","toggled"].includes(String(a).toLowerCase()), loot: "an obsidian key behind timing diagrams", clue: "Check behind the timing diagram posters." },
-      { q: "Assembly: R2 = 8; execute SHL R2. New value?", check: a => parseInt(a) === 16, loot: "a crystal key in the ALU shard", clue: "Look near the shift registers on the bench." },
-      { q: "Decoder: 2-to-4 decoder input '11' activates output?", check: a => parseInt(a) === 3, loot: "an emerald key in a decoder socket", clue: "Inspect any empty decoder sockets." },
-      { q: "Multiplexer: 4-to-1 MUX select '10' chooses input?", check: a => parseInt(a) === 2, loot: "a sapphire key under a MUX chip", clue: "Slide open the MUX cabinet drawers." },
-      { q: "Final Riddle: 8 bits unsigned 0-255, in 2's complement signed range?", check: a => String(a).includes("-128") && String(a).includes("127"), loot: "the master key welded to the EXIT DOOR", clue: "The final vault glows — inspect the vault plaque." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='300' viewBox='0 0 500 300'%3E%3Crect fill='%23071a20' width='500' height='300'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='24' fill='%2300e5ff' font-weight='bold'%3EAnd Gate Truth Table%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='100' y='100' font-size='18' fill='%23cfeee7' font-weight='bold'%3EA  B  Output%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='100' y='150' font-size='18' fill='%23cfeee7'%3E0  0    0%3C/text%3E%3Ctext x='100' y='180' font-size='18' fill='%23cfeee7'%3E0  1    0%3C/text%3E%3Ctext x='100' y='210' font-size='18' fill='%23cfeee7'%3E1  0    0%3C/text%3E%3Ctext x='100' y='240' font-size='18' fill='%23ffff00' font-weight='bold'%3E1  1    ?%3C/text%3E%3Cline x1='40' y1='255' x2='460' y2='255' stroke='%23ffb86b' stroke-width='2'/%3E%3C/svg%3E", q: "From the AND gate truth table, what is the output when A=1 and B=1?", check: a => parseInt(a) === 1, loot: "a jade key from the truth table vault", clue: "Check the logic analyzer in the corner." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='320' viewBox='0 0 500 320'%3E%3Crect fill='%23071a20' width='500' height='320'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3E8-Bit Register: Bit Value%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Crect x='60' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='80' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E7%3C/text%3E%3Crect x='110' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='130' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E6%3C/text%3E%3Crect x='160' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='180' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E5%3C/text%3E%3Crect x='210' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='230' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E4%3C/text%3E%3Crect x='260' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='280' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E3%3C/text%3E%3Crect x='310' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='330' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E2%3C/text%3E%3Crect x='360' y='90' width='40' height='40' fill='%23ffff00' stroke='%23ffff00' stroke-width='2'/%3E%3Ctext x='380' y='120' text-anchor='middle' font-size='14' fill='%23000' font-weight='bold'%3E2%5E1%3C/text%3E%3Crect x='410' y='90' width='40' height='40' fill='%23333' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='430' y='120' text-anchor='middle' font-size='14' fill='%23cfeee7' font-weight='bold'%3E2%5E0%3C/text%3E%3Ctext x='250' y='170' text-anchor='middle' font-size='16' fill='%23cfeee7'%3ERegister Value: 11010110%3C/text%3E%3Ctext x='250' y='210' text-anchor='middle' font-size='16' fill='%23ffff00'%3EWhat is the value of 2%5E1?%3C/text%3E%3C/svg%3E", q: "The highlighted bit represents 2^1. What is 2^1?", check: a => parseInt(a) === 2, loot: "a gold key from the register chamber", clue: "Review binary weights on the shelf." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='320' viewBox='0 0 500 320'%3E%3Crect fill='%23071a20' width='500' height='320'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3EMUX (4-to-1) Selection%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='100' y='100' font-size='16' fill='%23cfeee7' font-weight='bold'%3ES1  S0  Output%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='100' y='150' font-size='16' fill='%23cfeee7'%3E0   0   I0%3C/text%3E%3Ctext x='100' y='180' font-size='16' fill='%23cfeee7'%3E0   1   I1%3C/text%3E%3Ctext x='100' y='210' font-size='16' fill='%23cfeee7'%3E1   0   I2%3C/text%3E%3Ctext x='100' y='240' font-size='16' fill='%23ffff00' font-weight='bold'%3E1   1   ?%3C/text%3E%3Cline x1='40' y1='255' x2='460' y2='255' stroke='%23ffb86b' stroke-width='2'/%3E%3C/svg%3E", q: "When S1=1, S0=1, which input is selected? (Enter: I3)", check: a => String(a).trim().toUpperCase() === "I3", loot: "a platinum key from the multiplexer nest", clue: "Check selector diagrams near control panel." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='300' viewBox='0 0 500 300'%3E%3Crect fill='%23071a20' width='500' height='300'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3E4-Bit Counter Sequence%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='120' y='100' font-size='16' fill='%23cfeee7' font-weight='bold'%3EStep  Binary Value%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='120' y='150' font-size='16' fill='%23cfeee7'%3E0      0000%3C/text%3E%3Ctext x='120' y='180' font-size='16' fill='%23cfeee7'%3E1      0001%3C/text%3E%3Ctext x='120' y='210' font-size='16' fill='%23cfeee7'%3E2      0010%3C/text%3E%3Ctext x='120' y='240' font-size='16' fill='%23ffff00' font-weight='bold'%3E3      ????%3C/text%3E%3C/svg%3E", q: "In a 4-bit binary counter, after 0000, 0001, 0010, what comes next?", check: a => String(a) === "0011", loot: "a diamond key from the counter chamber", clue: "Study binary increment patterns." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='340' viewBox='0 0 500 340'%3E%3Crect fill='%23071a20' width='500' height='340'/%3E%3Ctext x='250' y='35' text-anchor='middle' font-size='22' fill='%2300e5ff' font-weight='bold'%3E2%27s Complement Range%3C/text%3E%3Cline x1='40' y1='60' x2='460' y2='60' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='100' y='100' font-size='16' fill='%23cfeee7' font-weight='bold'%3E Bits    Min    Max%3C/text%3E%3Cline x1='40' y1='115' x2='460' y2='115' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='100' y='150' font-size='16' fill='%23cfeee7'%3E  4     -8     7%3C/text%3E%3Ctext x='100' y='180' font-size='16' fill='%23cfeee7'%3E  8    -128   127%3C/text%3E%3Ctext x='100' y='210' font-size='16' fill='%23ffff00' font-weight='bold'%3E 16     ???   ????%3C/text%3E%3Ctext x='250' y='270' text-anchor='middle' font-size='15' fill='%23ffff00'%3EFor 16-bit 2%27s complement MIN value?%3C/text%3E%3C/svg%3E", q: "For 16-bit 2's complement, what is the MINIMUM value?", check: a => parseInt(a) === -32768, loot: "the ruby key from the final vault", clue: "Check the binary range chart." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='320' viewBox='0 0 500 320'%3E%3Crect fill='%23071a20' width='500' height='320'/%3E%3Ctext x='250' y='30' text-anchor='middle' font-size='20' fill='%2300e5ff' font-weight='bold'%3EHamming (7,4) Code%3C/text%3E%3Ctext x='250' y='60' text-anchor='middle' font-size='14' fill='%23cfeee7'%3E Data: D1=1, D2=0, D3=1, D4=0%3C/text%3E%3Ctext x='250' y='85' text-anchor='middle' font-size='14' fill='%23cfeee7'%3E P1=D1⊕D3⊕D4%3C/text%3E%3Cline x1='40' y1='105' x2='460' y2='105' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='250' y='150' text-anchor='middle' font-size='14' fill='%23ffff00' font-weight='bold'%3E P1=1⊕1⊕0 = ?%3C/text%3E%3Ctext x='250' y='180' text-anchor='middle' font-size='13' fill='%23ffff00'%3E(XOR: 1⊕1=0, 0⊕0=0)%3C/text%3E%3C/svg%3E", q: "For Hamming code: P1=D1⊕D3⊕D4 where D1=1, D3=1, D4=0. What is P1?", check: a => parseInt(a) === 0, loot: "a crimson key from parity vault", clue: "Study XOR truth tables carefully." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='300' viewBox='0 0 500 300'%3E%3Crect fill='%23071a20' width='500' height='300'/%3E%3Ctext x='250' y='30' text-anchor='middle' font-size='20' fill='%2300e5ff' font-weight='bold'%3EGray Code Sequence%3C/text%3E%3Ctext x='150' y='70' font-size='14' fill='%23cfeee7'%3EDec   Binary   Gray%3C/text%3E%3Cline x1='40' y1='85' x2='460' y2='85' stroke='%23ffb86b' stroke-width='1'/%3E%3Ctext x='150' y='110' font-size='14' fill='%23cfeee7'%3E 0     0000    0000%3C/text%3E%3Ctext x='150' y='135' font-size='14' fill='%23cfeee7'%3E 1     0001    0001%3C/text%3E%3Ctext x='150' y='160' font-size='14' fill='%23cfeee7'%3E 2     0010    ????%3C/text%3E%3Ctext x='150' y='185' font-size='14' fill='%23cfeee7'%3E 3     0011    0010%3C/text%3E%3Ctext x='250' y='240' text-anchor='middle' font-size='14' fill='%23ffff00' font-weight='bold'%3EGray code of binary 2?%3C/text%3E%3C/svg%3E", q: "Gray code for binary 2 (0010) is?", check: a => String(a) === "0011", loot: "an amber key from gray code chamber", clue: "Use XOR rule: Gray[i]=Binary[i]⊕Binary[i+1]." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='320' viewBox='0 0 500 320'%3E%3Crect fill='%23071a20' width='500' height='320'/%3E%3Ctext x='250' y='30' text-anchor='middle' font-size='20' fill='%2300e5ff' font-weight='bold'%3EBooth%27s Multiplication%3C/text%3E%3Ctext x='250' y='65' text-anchor='middle' font-size='14' fill='%23cfeee7'%3E Multiplicand = 0110 (6)%3C/text%3E%3Ctext x='250' y='90' text-anchor='middle' font-size='14' fill='%23cfeee7'%3E Multiplier = 0011 (3)%3C/text%3E%3Cline x1='40' y1='110' x2='460' y2='110' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='250' y='150' text-anchor='middle' font-size='13' fill='%23ffff00'%3E Result = 6 × 3 = 18%3C/text%3E%3Ctext x='250' y='175' text-anchor='middle' font-size='14' fill='%23ffff00' font-weight='bold'%3EBinary result in 8-bit?%3C/text%3E%3C/svg%3E", q: "Booth's algorithm: 0110 (6) × 0011 (3) in 8-bit binary?", check: a => String(a) === "00010010", loot: "a silver key from booth vault", clue: "6×3=18, 18 in binary is 10010." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='300' viewBox='0 0 500 300'%3E%3Crect fill='%23071a20' width='500' height='300'/%3E%3Ctext x='250' y='30' text-anchor='middle' font-size='20' fill='%2300e5ff' font-weight='bold'%3EK-Map Simplification%3C/text%3E%3Ctext x='250' y='65' text-anchor='middle' font-size='14' fill='%23cfeee7'%3E Function: f(A,B,C) = AB + A%27BC%3C/text%3E%3Cline x1='40' y1='85' x2='460' y2='85' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='250' y='130' text-anchor='middle' font-size='14' fill='%23ffff00' font-weight='bold'%3E How many product terms?%3C/text%3E%3Ctext x='250' y='160' text-anchor='middle' font-size='13' fill='%23ffff00'%3E Count AND terms: AB is 1, A%27BC is 2%3C/text%3E%3C/svg%3E", q: "K-map simplification AB + A'BC has how many product terms?", check: a => parseInt(a) === 2, loot: "a golden key from K-map chamber", clue: "Count distinct AND terms in the expression." },
-      { type: "image", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='300' viewBox='0 0 500 300'%3E%3Crect fill='%23071a20' width='500' height='300'/%3E%3Ctext x='250' y='30' text-anchor='middle' font-size='20' fill='%2300e5ff' font-weight='bold'%3ECarry Lookahead Logic%3C/text%3E%3Ctext x='250' y='65' text-anchor='middle' font-size='14' fill='%23cfeee7'%3E C1 = G0 + P0·C0%3C/text%3E%3Ctext x='250' y='90' text-anchor='middle' font-size='14' fill='%23cfeee7'%3E G0=1, P0=1, C0=0%3C/text%3E%3Cline x1='40' y1='110' x2='460' y2='110' stroke='%23ffb86b' stroke-width='2'/%3E%3Ctext x='250' y='150' text-anchor='middle' font-size='14' fill='%23ffff00' font-weight='bold'%3E C1 = 1 + (1·0) = ?%3C/text%3E%3Ctext x='250' y='175' text-anchor='middle' font-size='13' fill='%23ffff00'%3E Simplify: 1 + 0 = 1%3C/text%3E%3C/svg%3E", q: "In Carry Lookahead: C1 = G0 + P0·C0 where G0=1, P0=1, C0=0. What is C1?", check: a => parseInt(a) === 1, loot: "a lightning key from CLA vault", clue: "Apply Boolean algebra: 1 + (1·0) = 1." }
-    ];
+  // 12 — Broken Clock (kept)
+  { q: "(Image) A clock shows minute hand at 12 and hour hand exactly between 3 and 4. What time is it?", a: "3:30", hint: "Hour hand moves between hour marks as minutes pass.", imgDesc: "Analogue clock: minute hand at 12, hour hand halfway between 3 and 4." },
 
-    let keysCollected = 0, timeRemaining = 600, timerInterval = null, gameActive = false;
-    let currentDoor = null;
-    const doorAttempts = {};
+  // 13 — Tougher pattern bingo (now ask for 6)
+  { q: "(Image) Pattern mapping shown: 2 → 6, 3 → 12, 4 → 20, 5 → 30. What is the output for 6?", a: "42", hint: "Each output equals n × (n + 1). For 6: 6×7 = 42.", imgDesc: "A small table showing inputs and outputs as above." },
 
-    function initializeDoorAttempts() { for (let i = 1; i <= 20; i++) doorAttempts[i] = 3; }
-    function updateDoorDisplay(doorNum) {
-      const attemptsEl = document.getElementById(`attempts${doorNum}`);
-      if (attemptsEl) {
-        attemptsEl.innerText = `3️⃣ ${doorAttempts[doorNum]}/3`;
-        attemptsEl.style.color = doorAttempts[doorNum] === 1 ? '#ff0000' : (doorAttempts[doorNum] === 2 ? '#ffff00' : '#ffb86b');
-      }
-    }
-    function startTimer() {
-      gameActive = true;
-      timerInterval = setInterval(() => { timeRemaining--; updateTimerDisplay(); if (timeRemaining <= 0) gameOver(); }, 1000);
-    }
-    function updateTimerDisplay() {
-      const timerEl = document.getElementById("timer");
-      const minutes = Math.floor(timeRemaining / 60), seconds = timeRemaining % 60;
-      timerEl.innerText = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')}`;
-      timerEl.classList.toggle("danger", timeRemaining <= 60);
-      timerEl.classList.toggle("warning", timeRemaining > 60 && timeRemaining <= 180);
-    }
-    function gameOver() { gameActive = false; clearInterval(timerInterval); document.getElementById("gameContainer").style.display = "none"; document.getElementById("timeoutScreen").style.display = "block"; document.getElementById("finalKeys").innerText = keysCollected; }
-    function startGame() { document.getElementById("introScreen").style.display = "none"; document.getElementById("gameContainer").style.display = "block"; document.getElementById("door1").classList.add("pulse"); initializeDoorAttempts(); startTimer(); }
-    function onDoorClick(doorNum) {
-      if (!gameActive || document.getElementById(`door${doorNum}`).classList.contains("unlocked") || doorAttempts[doorNum] <= 0) return;
-      currentDoor = doorNum;
-      const p = puzzles[doorNum - 1];
-      document.getElementById("modalTitle").innerText = `🚪 Door ${doorNum}`;
-      if (p.type === "image") {
-        document.getElementById("modalImage").src = p.image;
-        document.getElementById("modalImage").style.display = "block";
-      } else {
-        document.getElementById("modalImage").style.display = "none";
-      }
-      document.getElementById("modalQuestion").innerText = p.q;
-      document.getElementById("puzzleInput").value = "";
-      document.getElementById("modalAttempts").innerText = `Attempts: ${doorAttempts[doorNum]}/3`;
-      document.getElementById("puzzleModal").classList.add("show");
-      document.getElementById("puzzleInput").focus();
-    }
-    function submitAnswer() {
-      if (currentDoor === null) return;
-      const attempt = document.getElementById("puzzleInput").value.trim();
-      if (!attempt) { alert("❌ Please enter an answer!"); return; }
-      const p = puzzles[currentDoor - 1];
-      if (p.check(attempt)) {
-        document.getElementById("puzzleModal").classList.remove("show");
-        unlockDoor(currentDoor);
-        showNpc(`✨ Correct! You found ${p.loot}.\n\n📍 ${p.clue}`);
-        currentDoor = null;
-      } else {
-        doorAttempts[currentDoor]--;
-        updateDoorDisplay(currentDoor);
-        document.getElementById("modalAttempts").innerText = `Attempts: ${doorAttempts[currentDoor]}/3`;
-        if (doorAttempts[currentDoor] <= 0) { alert(`❌ Door ${currentDoor} LOCKED!`); document.getElementById("puzzleModal").classList.remove("show"); currentDoor = null; }
-        else { alert(`❌ Incorrect. ${doorAttempts[currentDoor]} attempts left.`); document.getElementById("puzzleInput").value = ""; document.getElementById("puzzleInput").focus(); }
-      }
-    }
-    function closeModal() { document.getElementById("puzzleModal").classList.remove("show"); currentDoor = null; }
-    function unlockDoor(doorNum) {
-      const doorEl = document.getElementById(`door${doorNum}`);
-      doorEl.classList.add("unlocked");
-      doorEl.classList.remove("pulse");
-      const next = document.getElementById(`door${doorNum + 1}`);
-      if (next) { next.classList.remove("hidden"); next.classList.add("pulse"); }
-      keysCollected++;
-      document.getElementById("keyCount").innerText = `🔑 Keys Collected: ${keysCollected}/20`;
-      document.getElementById("message").innerText = `✅ DOOR ${doorNum} UNLOCKED! 🎯 ${keysCollected}/20 keys`;
-      const emojis = ["🔑","🗝️","🔐","🧩","💠","⚙️","🔸","🔹","⭐","🏆","💎","🔱","👑","🌟","⚡","🎯","🔥","💫","🎖️","🏅"];
-      const span = document.createElement("span");
-      span.className = "key-icon";
-      span.innerText = emojis[(keysCollected-1) % emojis.length];
-      document.getElementById("keyShelf").appendChild(span);
-      if (keysCollected === 20) { gameActive = false; clearInterval(timerInterval); document.getElementById("exitDoor").style.display = "block"; showNpc("🎉 All keys collected! Escape now!"); }
-    }
-    function showNpc(text) { document.getElementById("npcText").innerText = text; document.getElementById("npc").style.display = "block"; }
-    function hideNpc() { document.getElementById("npc").style.display = "none"; }
-    function escapeRoom() { if (!gameActive) return; gameActive = false; clearInterval(timerInterval); document.getElementById("gameContainer").style.display = "none"; document.getElementById("victoryScreen").style.display = "block"; const mins = Math.floor((600 - timeRemaining) / 60); const secs = (600 - timeRemaining) % 60; document.getElementById("victoryTime").innerText = `🏃 Escaped in ${mins}:${secs.toString().padStart(2, '0')}! 🏁`; }
-    document.addEventListener("DOMContentLoaded", () => { for (let i = 2; i <= 20; i++) document.getElementById(`door${i}`).classList.add('hidden'); });
-    document.addEventListener("keypress", (e) => { if (e.key === "Enter" && currentDoor !== null) submitAnswer(); });
-  </script>
+  // 14 — Odd One Out (Animals) (kept)
+  { q: "(Image) Four animals shown: dog, cat, mouse, frog. Which is odd one out?", a: "frog", hint: "Three are mammals.", imgDesc: "Icons: dog, cat, mouse, frog in a row." },
+
+  // 15 — Battery Levels (kept)
+  { q: "(Image) Three batteries shown: 100%, 70%, 40%. A phone shows same level as the last battery. What percent is the phone?", a: "40%", hint: "It matches the last battery shown.", imgDesc: "Three battery icons with percentages; phone shows unknown matching last icon." },
+
+  // 16 — CODE SNIPPET (changed topic & type) — image-based code
+  { q: "(Image) A small code snippet image: `printf(\"%d\", 3 + 4 * 2);` — What prints?", a: "11", hint: "Multiplication before addition.", imgDesc: "Screenshot of a tiny C code snippet: printf(\"%d\", 3 + 4 * 2);" },
+
+  // 17 — Missing Domino (kept)
+  { q: "(Image) Tiles: [2|5], [5|8], [8|11]. What is the first number of third tile? (shown as ?|11)", a: "8", hint: "Numbers chain: end of previous is start of next.", imgDesc: "Row of three dominos showing the numbers above." },
+
+  // 18 — Which Cup Fills First? (kept)
+  { q: "(Image) Three connected cups; top pipe to Cup1 is blocked, flow goes to Cup2 then Cup3. Which cup fills first?", a: "cup 2", hint: "Follow open paths only.", imgDesc: "Schematic of cups connected vertically; first pipe blocked." },
+
+  // 19 — LOGIC CIRCUIT (changed topic & type)
+  { q: "(Image) A half-adder diagram image with inputs A=1 and B=1. What is the SUM output?", a: "0", hint: "Sum is A XOR B (1⊕1 = 0).", imgDesc: "Simple half-adder block with inputs labelled A and B and outputs Sum and Carry." },
+
+  // 20 — OPTICAL ILLUSION (changed topic & type)
+  { q: "(Image) Two horizontal lines of equal length are shown with arrows at ends making one look longer. Which is longer?", a: "both equal", hint: "It's an illusion; measure to confirm.", imgDesc: "Classic Müller-Lyer style illusion: two equal lines with arrowheads making them appear different lengths." }
+];
+
+let current = 0;
+let attempts = 0;
+let totalTime = 15 * 60; // seconds
+
+function normalize(ans){ return String(ans).trim().toLowerCase(); }
+
+function startTimer(){
+  const el = document.getElementById('timer');
+  const tick = setInterval(()=>{
+    if (totalTime <= 0){ el.textContent = 'Time Left: 00:00'; alert('Time up — game over'); clearInterval(tick); return; }
+    totalTime--;
+    const m = Math.floor(totalTime/60), s = totalTime%60;
+    el.textContent = `Time Left: ${m}:${String(s).padStart(2,'0')}`;
+  }, 1000);
+}
+
+function loadPuzzle(){
+  const p = puzzles[current];
+  document.getElementById('puzzle-title').textContent = `Door ${current+1}`;
+  document.getElementById('puzzle-text').textContent = p.q;
+  document.getElementById('hint').style.display = 'none';
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('answer').value = '';
+  // image description handling
+  if (p.imgDesc){
+    document.getElementById('imageDesc').style.display = 'block';
+    document.getElementById('imgText').textContent = p.imgDesc;
+  } else {
+    document.getElementById('imageDesc').style.display = 'none';
+    document.getElementById('imgText').textContent = '';
+  }
+  attempts = 0;
+}
+
+function checkAnswer(){
+  const user = normalize(document.getElementById('answer').value);
+  const correct = normalize(puzzles[current].a);
+  if (!user){ alert('Enter an answer'); return; }
+  attempts++;
+  if (user === correct){
+    document.getElementById('feedback').textContent = '✅ Correct — moving to next door.';
+    setTimeout(()=>{ nextPuzzle(); }, 900);
+    return;
+  }
+  // wrong answer handling
+  if (attempts === 2){
+    document.getElementById('hint').style.display = 'block';
+    document.getElementById('hint').textContent = 'Hint: ' + puzzles[current].hint;
+    document.getElementById('feedback').textContent = '❌ Incorrect — one more try.';
+  } else if (attempts >= 3){
+    document.getElementById('feedback').textContent = `❌ Incorrect — correct: ${puzzles[current].a}. Proceeding...`;
+    setTimeout(()=>{ nextPuzzle(); }, 1200);
+  } else {
+    document.getElementById('feedback').textContent = '❌ Incorrect — try again.';
+  }
+}
+
+function nextPuzzle(){
+  current++;
+  if (current >= puzzles.length){
+    document.getElementById('puzzle-title').textContent = '🎉 ESCAPE COMPLETE!';
+    document.getElementById('puzzle-text').textContent = 'You completed all doors — well done!';
+    document.getElementById('imageDesc').style.display = 'none';
+    document.getElementById('hint').style.display = 'none';
+    document.getElementById('answer').style.display = 'none';
+    return;
+  }
+  loadPuzzle();
+}
+
+// start
+startTimer();
+loadPuzzle();
+</script>
 </body>
 </html>
