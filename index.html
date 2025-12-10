@@ -1,180 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Decode & Discover — Escape Room</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Decode & Discover — 15 Puzzles</title>
 <style>
-body {
-  font-family: 'Orbitron', sans-serif;
-  background: linear-gradient(120deg, #0b1220, #1a1f2c);
-  color: #e6f7ff;
-  text-align: center;
-  padding: 20px;
-  background-image: url('https://images.unsplash.com/photo-1557682224-5b8590cd9ec5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w5NzF8MHwxfGFsbHwxfHxjb2RlJTIwY29kZXxlbnwwfHx8fDE2OTk4NDYxMzk&ixlib=rb-4.0.3&q=80&w=1080');
-  background-size: cover;
-  background-attachment: fixed;
-}
-
-.container {
-  max-width: 900px;
-  margin: 20px auto;
-  padding: 30px;
-  background: rgba(10, 18, 32, 0.85);
-  border-radius: 16px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.7);
-  backdrop-filter: blur(5px);
-}
-
-h1 {
-  font-family: 'Press Start 2P', cursive;
-  color: #00f0a0;
-  font-size: 2em;
-  margin-bottom: 10px;
-}
-
-h2 {
-  color: #7be3ff;
-}
-
-#welcome {
-  font-size: 18px;
-  margin-bottom: 15px;
-  color: #ffd75f;
-  font-style: italic;
-}
-
-#instructions {
-  font-size: 16px;
-  color: #cfeee7;
-  margin-bottom: 20px;
-  line-height: 1.5;
-  text-align: left;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  background: rgba(255,255,255,0.02);
-  padding: 12px;
-  border-radius: 8px;
-}
-
-#timer { font-size: 18px; color: #ffda79; margin-bottom: 12px; }
-#puzzle-area { background: rgba(255,255,255,0.02); padding: 18px; border-radius: 8px; }
-#puzzle-image { margin: 12px auto; max-width: 100%; display: none; }
-#imageDesc { display: none; color:#d1f7ff; background: rgba(255,255,255,0.02); padding:10px; border-radius:6px; margin:8px 0; }
-input#answer { padding: 10px; width: 70%; border-radius: 6px; border: 1px solid #2b6b88; background: rgba(255,255,255,0.02); color: #e6f7ff; }
-button { padding: 10px 16px; margin-left: 8px; border-radius: 6px; border: none; background: linear-gradient(90deg,#00c9ff,#00f0a0); color: #002; font-weight: 700; cursor: pointer; }
-#hint { color: #ffcf6a; margin-top: 10px; }
-#feedback { margin-top: 10px; color: #ff9aa2; }
-
+  :root{
+    --bg1:#0b1220;
+    --bg2:#071020;
+    --electric:#00b3ff;
+    --accent:#00aaff;
+    --panel: rgba(0,0,0,0.82);
+    --input-bg: rgba(0,51,102,0.92);
+    --hint: #ffda79;
+    --text: #e6f7ff;
+  }
+  html,body{height:100%;margin:0}
+  body{
+    background: linear-gradient(180deg,var(--bg1),var(--bg2));
+    color:var(--text);
+    font-family: "Inter", Arial, sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:28px;
+    box-sizing:border-box;
+  }
+  h1{
+    margin:6px 0 12px 0;
+    color:var(--electric);
+    font-size:34px;
+    letter-spacing:1px;
+    text-shadow: 0 0 12px rgba(0,179,255,0.25);
+    font-weight:700;
+  }
+  #instructions{
+    width:820px;
+    max-width:94%;
+    background:var(--panel);
+    border:2px solid var(--accent);
+    padding:14px 18px;
+    border-radius:12px;
+    text-align:left;
+    line-height:1.4;
+    margin-bottom:14px;
+  }
+  #timer{
+    margin:10px 0;
+    color:var(--hint);
+    font-weight:600;
+  }
+  #questionBox{
+    width:820px;
+    max-width:94%;
+    background: linear-gradient(180deg, rgba(0,0,0,0.62), rgba(6,12,20,0.6));
+    border-radius:12px;
+    border:2px solid rgba(0,163,255,0.15);
+    padding:22px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    text-align:left;
+    color:var(--text);
+    font-size:18px;
+    margin-bottom:12px;
+  }
+  #questionText{ font-size:20px; margin-bottom:12px; }
+  #answerRow{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  input#answer {
+    flex:1 1 420px;
+    padding:12px 14px;
+    font-size:17px;
+    border-radius:8px;
+    border:2px solid var(--electric);
+    background:var(--input-bg);
+    color:var(--text);
+  }
+  button#submitBtn{
+    padding:12px 18px;
+    background: linear-gradient(90deg,var(--electric),#00f0a0);
+    border:none;
+    color:#002;
+    font-weight:700;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  button#startBtn{
+    padding:12px 20px;
+    background:var(--electric);
+    border:none;
+    color:#001;
+    font-weight:700;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:8px;
+  }
+  #feedback { margin-top:12px; color:var(--hint); min-height:26px; }
+  .small { font-size:14px; color:#bfefff; opacity:0.9; }
+  .muted { color:#9ac7df; font-size:13px }
+  .correct-answer { color:#8fffb0; font-weight:700; }
+  footer{ margin-top:16px; color:#9ac7df; font-size:13px; }
+  @media (max-width:520px){
+    h1{font-size:28px}
+    #questionText{font-size:18px}
+  }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>🔐 Decode & Discover</h1>
-  <div id="welcome">Welcome to Decode & Discover — your mind, your clues, your escape!</div>
-  <div id="instructions">
-    <strong>Instructions:</strong>
-    <ul>
-      <li>There are 20 doors/puzzles to unlock, divided into Stage 1 (simple riddles) and Stage 2 (image-based challenges).</li>
-      <li>You have 15 minutes to complete all doors.</li>
-      <li>Type your answer in the box and click Submit.</li>
-      <li>You have 3 attempts per puzzle; after 2 wrong attempts, a hint will appear.</li>
-      <li>Think carefully — logic, patterns, and observation are key!</li>
-    </ul>
-  </div>
 
-  <div id="timer">Time Left: 15:00</div>
+<h1>DECODE & DISCOVER</h1>
 
-  <div id="puzzle-area">
-    <h2 id="puzzle-title">Door 1</h2>
-    <p id="puzzle-text"></p>
-    <img id="puzzle-image" />
-    <div id="imageDesc">Image: <span id="imgText"></span></div>
-    <div id="hint" style="display:none"></div>
-    <input id="answer" placeholder="Type your answer here" />
-    <button onclick="checkAnswer()">Submit</button>
-    <div id="feedback"></div>
-  </div>
+<div id="instructions">
+  <strong>How to play</strong><br>
+  • There are <strong>15</strong> questions. Answer them one-by-one in order. <br>
+  • You have <strong>3 attempts</strong> per question. After the 2nd wrong try you get a hint. After the 3rd wrong try the correct answer is shown and the game automatically moves to the next question. (Option A behavior.)<br>
+  • Timer: <strong>10 minutes</strong>. When time runs out the page will reload. <br>
+  • Answers are checked case-insensitively and punctuation/extra spaces are ignored. Puzzle #9 accepts several common forms (e.g. <code>exit0</code>, <code>exit(0)</code>, etc.).<br>
 </div>
 
+<div id="timer">Time Left: 10:00</div>
+
+<div id="questionBox" style="display:none">
+  <div id="questionText"></div>
+  <div id="answerRow">
+    <input id="answer" autocomplete="off" placeholder="Type your answer here" />
+    <button id="submitBtn">Submit</button>
+  </div>
+  <div id="feedback" aria-live="polite"></div>
+  <div class="small muted" id="progress"></div>
+</div>
+
+<button id="startBtn">Start</button>
+
+<footer>Made for your escape room — responsive, stable, zero skipping.</footer>
+
 <script>
-// ----------------- JS logic stays the same as your current script -----------------
+/* -------------------------
+   Puzzle list (15 puzzles)
+   -------------------------
+   Each puzzle: { q: question text, a: array of accepted answers (normalized), hint: hint text }
+*/
 const puzzles = [
-  // Stage 1 & Stage 2 puzzles from your current code
-  // (Copy existing puzzles array here)
+  { q: "1) NOT(OR(0,1,0)) = ?", a: ["0"], hint: "OR yields 1 if any input is 1." },
+  { q: "2) Decimal value of 1011?", a: ["11"], hint: "Binary to decimal: 8+0+2+1." },
+  { q: "3) A full adder has how many inputs?", a: ["3"], hint: "A, B and carry-in." },
+  { q: "4) I open only when every switch is ON. What am I?", a: ["and"], hint: "All inputs must be 1." },
+  { q: "5) If two inputs differ I output 1. Who am I?", a: ["xor"], hint: "Exclusive OR." },
+  { q: "6) I speak only when both are silent. Who am I?", a: ["nor"], hint: "Opposite of OR." },
+  { q: "7) Where do C programs begin?", a: ["main"], hint: "The entry function." },
+  { q: "8) I call myself until the work is done. What is this?", a: ["recursion"], hint: "A function calling itself." },
+
+  // Puzzle 9 accepts multiple common forms
+  { q: "9) I end the program instantly. Which command? (C)", 
+    a: ["exit0","exit(0)","exit 0","exit(0);","exit 0;"], 
+    hint: "Common C exit forms: exit(0) or exit 0." },
+
+  { q: "10) Conversion from one data type to another is called?", a: ["typecasting", "casting"], hint: "E.g., (int) or (float)." },
+
+  // 11–15 updated as user specified earlier
+  { q: "11) Light as a feather, yet no man can hold me for long. What am I?", a: ["breath"], hint: "You breathe it." },
+  { q: "12) The more of me there is, the less you see. What am I?", a: ["darkness"], hint: "Opposite of light." },
+  { q: "13) Find the next number: 2, 6, 12, 20, ? (Pattern n(n+1) — 1·2,2·3,3·4,...)", a: ["30"], hint: "This is n(n+1): next is 5·6 = 30." },
+  { q: "14) Which language popularized the phrase “write once, run anywhere”?", a: ["java"], hint: "Runs on the JVM." },
+  { q: "15) Magic square 3×3 using 1–9, all rows/cols/diagonals sum 15. Center number?", a: ["5"], hint: "Center of 3×3 magic square is 5." }
 ];
 
-let current = 0;
-let attempts = 0;
-let totalTime = 15 * 60;
+/* -------------------------
+   State
+   ------------------------- */
+let current = 0;          // index into puzzles
+let attempts = 0;         // attempts for current question
+let timerSeconds = 10 * 60; // 10 minutes
+let timerInterval = null;
+let advancing = false;    // lock while auto-advancing to prevent double clicks
 
-function normalize(ans){ return String(ans).trim().toLowerCase().replace(/\s+/g,''); }
+/* -------------------------
+   Utilities: normalization
+   - lowercase
+   - strip punctuation except alphanumerics
+   - remove multiple spaces
+   - also special-case to remove trailing semicolon
+   ------------------------- */
+function normalizeAnswer(s){
+  if(!s) return "";
+  s = String(s).trim().toLowerCase();
+  // remove trailing semicolons/spaces
+  s = s.replace(/;$/,'').trim();
+  // collapse spaces
+  s = s.replace(/\s+/g,' ');
+  // remove punctuation except parentheses for forms like exit(0)
+  // but also produce a variant without punctuation for matching e.g. "exit 0" -> "exit0"
+  return s;
+}
 
+function canonicalForms(s){
+  // returns a set of normalized forms for a user input to compare against accepted answers
+  const norm = normalizeAnswer(s);
+  const noSpaces = norm.replace(/\s+/g,'');
+  const stripPunct = norm.replace(/[^a-z0-9\(\)]/g,''); // keep parentheses if any
+  return new Set([norm, noSpaces, stripPunct]);
+}
+
+/* -------------------------
+   Rendering
+   ------------------------- */
+const qBox = document.getElementById("questionBox");
+const qText = document.getElementById("questionText");
+const answerInput = document.getElementById("answer");
+const submitBtn = document.getElementById("submitBtn");
+const feedbackEl = document.getElementById("feedback");
+const progressEl = document.getElementById("progress");
+const timerEl = document.getElementById("timer");
+const startBtn = document.getElementById("startBtn");
+
+function renderCurrent(){
+  advancing = false;
+  attempts = 0;
+  feedbackEl.textContent = "";
+  answerInput.value = "";
+  answerInput.disabled = false;
+  submitBtn.disabled = false;
+
+  if(current >= puzzles.length){
+    qBox.style.display = "block";
+    qText.innerHTML = "<strong>🎉 All done — congratulations!</strong>";
+    document.getElementById("answerRow").style.display = "none";
+    feedbackEl.innerHTML = "";
+    progressEl.innerText = `Completed ${puzzles.length}/${puzzles.length}`;
+    return;
+  }
+
+  const p = puzzles[current];
+  qBox.style.display = "block";
+  qText.innerText = p.q;
+  progressEl.innerText = `Question ${current+1} of ${puzzles.length}`;
+  // focus input
+  setTimeout(()=> answerInput.focus(), 50);
+}
+
+/* -------------------------
+   Timer
+   ------------------------- */
 function startTimer(){
-  const el = document.getElementById('timer');
-  const tick = setInterval(()=>{
-    if(totalTime <= 0){ el.textContent='Time Left: 00:00'; alert('Time up — game over'); clearInterval(tick); return; }
-    totalTime--;
-    const m = Math.floor(totalTime/60), s = totalTime%60;
-    el.textContent = Time Left: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')};
+  timerEl.textContent = formatTime(timerSeconds);
+  timerInterval = setInterval(()=>{
+    timerSeconds--;
+    timerEl.textContent = formatTime(timerSeconds);
+    if(timerSeconds <= 0){
+      clearInterval(timerInterval);
+      alert("Time's up! The page will reload.");
+      location.reload();
+    }
   },1000);
 }
-
-function loadPuzzle(){
-  const p = puzzles[current];
-  document.getElementById('puzzle-title').textContent = Door ${current+1};
-  document.getElementById('puzzle-text').textContent = p.q;
-  document.getElementById('hint').style.display='none';
-  document.getElementById('feedback').textContent='';
-  document.getElementById('answer').value='';
-
-  if(p.imgDesc){
-    document.getElementById('imageDesc').style.display='block';
-    document.getElementById('imgText').textContent=p.imgDesc;
-  } else { document.getElementById('imageDesc').style.display='none'; }
-
-  attempts=0;
+function formatTime(sec){
+  const m = String(Math.floor(sec/60)).padStart(2,'0');
+  const s = String(sec%60).padStart(2,'0');
+  return `Time Left: ${m}:${s}`;
 }
 
+/* -------------------------
+   Answer checking logic (Option A)
+   - on correct -> advance to next
+   - on 1st wrong -> message
+   - on 2nd wrong -> show hint
+   - on 3rd wrong -> reveal correct, auto advance after delay
+   Ensure no skipping: advancing flag prevents double events
+   ------------------------- */
 function checkAnswer(){
-  const user=normalize(document.getElementById('answer').value);
-  const correct=normalize(puzzles[current].a);
-  if(!user){ alert('Enter an answer'); return; }
+  if(advancing) return;
+  const raw = answerInput.value;
+  const userForms = canonicalForms(raw);
+
+  const p = puzzles[current];
+  // build set of normalized accepted answers
+  const accepted = new Set();
+  for(const a of p.a){
+    const af = normalizeAnswer(a);
+    accepted.add(af);
+    accepted.add(af.replace(/\s+/g,'')); // no spaces
+    accepted.add(af.replace(/[^a-z0-9\(\)]/g,'')); // strip punctuation except parens
+  }
+
+  // check intersection
+  let matched = false;
+  for(const form of userForms){
+    if(accepted.has(form)) { matched = true; break; }
+  }
+
   attempts++;
-  if(user===correct){
-    document.getElementById('feedback').textContent='✅ Correct — moving to next door.';
-    setTimeout(()=>{ nextPuzzle(); },900);
+
+  if(matched){
+    // correct answer
+    feedbackEl.innerHTML = `<span class="correct-answer">✅ Correct.</span>`;
+    // disable input briefly and advance after small delay so user sees feedback
+    advancing = true;
+    answerInput.disabled = true;
+    submitBtn.disabled = true;
+    setTimeout(()=> {
+      current++;
+      renderCurrent();
+    }, 600);
     return;
   }
-  if(attempts===2){
-    document.getElementById('hint').style.display='block';
-    document.getElementById('hint').textContent='Hint: '+puzzles[current].hint;
-    document.getElementById('feedback').textContent='❌ Incorrect — one more try.';
-  } else if(attempts>=3){
-    document.getElementById('feedback').textContent=❌ Incorrect — correct: ${puzzles[current].a}. Proceeding...;
-    setTimeout(()=>{ nextPuzzle(); },1200);
+
+  // incorrect branch
+  if(attempts === 1){
+    feedbackEl.innerHTML = `❌ Incorrect — try again.`;
+  } else if(attempts === 2){
+    feedbackEl.innerHTML = `❌ Incorrect — <strong>Hint:</strong> ${p.hint}`;
   } else {
-    document.getElementById('feedback').textContent='❌ Incorrect — try again.';
+    // 3rd wrong attempt -> reveal correct answer(s), then auto-advance
+    // show first accepted answer in readable form
+    const shown = Array.isArray(p.a) ? p.a[0] : p.a;
+    feedbackEl.innerHTML = `❌ Incorrect — Correct: <span class="correct-answer">${shown}</span><br>Moving to next...`;
+    advancing = true;
+    answerInput.disabled = true;
+    submitBtn.disabled = true;
+    setTimeout(()=>{
+      current++;
+      renderCurrent();
+    }, 1200); // 1.2s as requested
   }
 }
 
-function nextPuzzle(){
-  current++;
-  if(current>=puzzles.length){
-    document.getElementById('puzzle-title').textContent='🎉 ESCAPE COMPLETE!';
-    document.getElementById('puzzle-text').textContent='You completed all doors — well done!';
-    document.getElementById('imageDesc').style.display='none';
-    document.getElementById('hint').style.display='none';
-    document.getElementById('answer').style.display='none';
-    return;
-  }
-  loadPuzzle();
-}
+/* -------------------------
+   Start handler & wiring
+   ------------------------- */
+startBtn.addEventListener("click", ()=>{
+  startBtn.style.display = "none";
+  renderCurrent();
+  startTimer();
+});
+submitBtn.addEventListener("click", checkAnswer);
+answerInput.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter") checkAnswer();
+});
 
-startTimer();
-loadPuzzle();
+/* Accessibility: prevent accidental double-clicks by disabling on submit; handled in checkAnswer */
 </script>
 </body>
 </html>
