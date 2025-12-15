@@ -45,11 +45,7 @@
     line-height:1.4;
     margin-bottom:14px;
   }
-  #timer{
-    margin:10px 0;
-    color:var(--hint);
-    font-weight:600;
-  }
+
   #doorCounter{
     color: var(--hint);
     font-weight:600;
@@ -118,11 +114,9 @@
   <strong>How to play</strong><br>
   • There are <strong>15</strong> questions. Answer them one-by-one in order. <br>
   • You have <strong>3 attempts</strong> per question. After the 2nd wrong try you get a hint. After the 3rd wrong try the correct answer is shown and the game automatically moves to the next question.<br>
-  • Timer: <strong>10 minutes</strong>. <br>
-  • Answers are checked case-insensitively and punctuation/extra spaces are ignored.<br>
+  • Answers are checked case-insensitively and punctuation/extra spaces are ignored.wd<br>
 </div>
 
-<div id="timer">Time Left: 10:00</div>
 <div id="doorCounter">Doors Unlocked: 0 / 15</div>
 
 <div id="questionBox">
@@ -147,7 +141,7 @@ const puzzles = [
   { q: "4) I open only when every switch is ON. What am I?", a: ["and"], hint: "All inputs must be 1." },
   { q: "5) If two inputs differ I output 1. Who am I?", a: ["xor"], hint: "Exclusive OR." },
   { q: "6) I speak only when both are silent. Who am I?", a: ["nor"], hint: "Opposite of OR." },
-  { q: "7) Where do C programs begin?", a: ["main"], hint: "The entry function." },
+  { q: "7) Where do C programs begin or runs", a: ["main"], hint: "The entry function." },
   { q: "8) I call myself until the work is done. What is this?", a: ["recursion"], hint: "A function calling itself." },
   { q: "9) I end the program instantly. Which command? (C)", 
     a: ["exit0","exit(0)","exit 0","exit(0);","exit 0;"], 
@@ -155,15 +149,14 @@ const puzzles = [
   { q: "10) Conversion from one data type to another is called?", a: ["typecasting", "casting"], hint: "E.g., (int) or (float)." },
   { q: "11) Light as a feather, yet no man can hold me for long. What am I?", a: ["breath"], hint: "You breathe it." },
   { q: "12) The more of me there is, the less you see. What am I?", a: ["darkness"], hint: "Opposite of light." },
-  { q: "13) Find the next number: 2, 6, 12, 20, ?", a: ["30"], hint: "This is n(n+1): next is 5·6 = 30." },
+  { q: "13) Find the next number: 2, 6, 12, 20, ?", a: ["30"], hint: "This is n(n+1): next is 5·6 ." },
   { q: "14) Which language popularized the phrase “write once, run anywhere”?", a: ["java"], hint: "Runs on the JVM." },
-  { q: "15) Magic square 3×3 using 1–9, all rows/cols/diagonals sum 15. Center number?", a: ["5"], hint: "Center of 3×3 magic square is 5." }
+  { q: "15) Magic square 3×3 using 1–9, all rows/cols/diagonals sum 15. Center number?", a: ["5"], hint: "Center of 3×3 magic square " }
 ];
 
 let current = 0;
 let attempts = 0;
 let correctCount = 0;
-let timerSeconds = 600;
 
 const qBox = document.getElementById("questionBox");
 const qText = document.getElementById("questionText");
@@ -171,10 +164,8 @@ const answerInput = document.getElementById("answer");
 const submitBtn = document.getElementById("submitBtn");
 const feedbackEl = document.getElementById("feedback");
 const progressEl = document.getElementById("progress");
-const timerEl = document.getElementById("timer");
 const startBtn = document.getElementById("startBtn");
 const doorCounter = document.getElementById("doorCounter");
-let timerInterval = null;
 
 function normalizeAnswer(s){
   if(!s) return "";
@@ -215,23 +206,7 @@ function renderCurrent(){
   setTimeout(()=> answerInput.focus(), 50);
 }
 
-function startTimer(){
-  timerEl.textContent = formatTime(timerSeconds);
-  timerInterval = setInterval(()=>{
-    timerSeconds--;
-    timerEl.textContent = formatTime(timerSeconds);
-    if(timerSeconds <= 0){
-      clearInterval(timerInterval);
-      endGame();
-    }
-  },1000);
-}
 
-function formatTime(sec){
-  const m = String(Math.floor(sec/60)).padStart(2,'0');
-  const s = String(sec%60).padStart(2,'0');
-  return `Time Left: ${m}:${s}`;
-}
 
 function checkAnswer(){
   if(current >= puzzles.length) return;
@@ -267,17 +242,22 @@ function checkAnswer(){
   if(attempts === 1){
     feedbackEl.innerHTML = "❌ Incorrect — try again.";
   } else if(attempts === 2){
-    feedbackEl.innerHTML = `❌ Incorrect — <strong>Hint:</strong> ${p.hint}`;
+    feedbackEl.innerHTML = "❌ Incorrect — Hint coming in 1 minute...";
+    setTimeout(()=>{
+      feedbackEl.innerHTML = `❌ Incorrect — <strong>Hint:</strong> ${p.hint}`;
+    }, 60000);
   } else {
-    feedbackEl.innerHTML = `❌ Incorrect — Correct: <span class="correct-answer">${p.a[0]}</span>`;
+    feedbackEl.innerHTML = "❌ Incorrect — Answer coming in 1 minute...";
     answerInput.disabled = true;
     submitBtn.disabled = true;
-    setTimeout(()=> { current++; renderCurrent(); }, 1200);
+    setTimeout(()=>{
+      feedbackEl.innerHTML = `❌ Incorrect — Correct: <span class="correct-answer">${p.a[0]}</span>`;
+      setTimeout(()=> { current++; renderCurrent(); }, 1200);
+    }, 60000);
   }
 }
 
 function endGame(){
-  clearInterval(timerInterval);
   answerInput.disabled = true;
   submitBtn.disabled = true;
   document.getElementById("answerRow").style.display = "none";
@@ -285,9 +265,17 @@ function endGame(){
   const passed = correctCount >= 8 ? "PASS" : "FAIL";
   const color = passed === "PASS" ? "#00ffb0" : "#ff6e6e";
 
-  qText.innerHTML = `<h2 style="color:${color};">${passed}</h2>
+  let resultHTML = `<h2 style="color:${color};">${passed}</h2>
                      <div style="font-size:20px;">Score: <strong>${correctCount} / 15</strong></div>
                      <div style="margin-top:6px;color:#9ac7df;">Minimum required: 8</div>`;
+  
+  if(passed === "PASS"){
+    resultHTML += `<div style="margin-top:20px;padding:16px;background:rgba(0,179,255,0.15);border:2px solid rgba(0,179,255,0.3);border-radius:8px;color:#e6f7ff;font-size:16px;line-height:1.6;">
+                     Among all the Dr-marked chambers, find the one lifted one level above the dust. Doctor's initials guard the room, but the true keeper is a lady of sound.
+                   </div>`;
+  }
+  
+  qText.innerHTML = resultHTML;
 
   progressEl.textContent = "";
   feedbackEl.textContent = "";
@@ -296,7 +284,6 @@ function endGame(){
 startBtn.addEventListener("click", ()=>{
   startBtn.style.display = "none";
   renderCurrent();
-  startTimer();
 });
 
 submitBtn.addEventListener("click", checkAnswer);
